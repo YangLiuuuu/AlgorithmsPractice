@@ -119,6 +119,134 @@ for i in range(1001):
 print(res)
 
 ```
+---
+---
+[验证回文串](https://leetcode-cn.com/problems/valid-palindrome/)
+
+> 给定一个字符串，验证它是否是回文串，只考虑字母和数字字符，可以忽略字母的大小写。
+> 
+> 说明：本题中，我们将空字符串定义为有效的回文串。
+
+示例：
+```
+输入: "A man, a plan, a canal: Panama"
+输出: true
+
+输入: "race a car"
+输出: false
+```
+代码(python3)
+```python
+class Solution:
+    def isPalindrome(self, s: str) -> bool:
+        s=s.lower()
+        i,j=0,len(s)-1
+        while i<j:
+            while i<j and not (s[i]>='a' and s[i]<='z') and not(s[i]>='0' and s[i]<='9'):
+                i+=1
+            while i<j and not (s[j]>='a' and s[j]<='z') and not(s[j]>='0' and s[j]<='9'):
+                j-=1
+            if i>=j:
+                break
+            if s[i]!=s[j]:
+                return False
+            i+=1
+            j-=1
+        return True
+```
+
+863 [二叉树中所有距离为 K 的结点](https://leetcode-cn.com/problems/all-nodes-distance-k-in-binary-tree/)
+
+> 给定一个二叉树（具有根结点 root）， 一个目标结点 target ，和一个整数值 K 。
+返回到目标结点 target 距离为 K 的所有结点的值的列表。 答案可以以任何顺序返回。
+
+示例:
+```
+输入：root = [3,5,1,6,2,0,8,null,null,7,4], target = 5, K = 2
+输出：[7,4,1]
+解释：
+所求结点为与目标结点（值为 5）距离为 2 的结点，
+值分别为 7，4，以及 1
+```
+![](https://s3-lc-upload.s3.amazonaws.com/uploads/2018/06/28/sketch0.png)
+
+- 给定的树是非空的。
+- 树上的每个结点都具有唯一的值 0 <= node.val <= 500 。
+- 目标结点 target 是树上的结点。
+- 0 <= K <= 1000.
+
+代码(c++)
+```c++
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    map<int,TreeNode*>parents;
+    void findTarget(TreeNode *root,TreeNode *parent,TreeNode *target){
+        if(root==NULL){
+            return;
+        }
+        parents[root->val] = parent;
+        if(root==target)return;
+        findTarget(root->left,root,target);
+        findTarget(root->right,root,target);
+    }
+    vector<int> distanceK(TreeNode* root, TreeNode* target, int K) {
+	   /**
+        *把树转换为图，然后进行广度优先遍历
+        *由于每个结点的子节点可以找到，转换过程中我们只需记录每个结点的父节点即可，
+		*可以用map记录，以结点值为键，父结点指针为值记录父子关系。
+        *BFS从target结点开始，进行BFS时先找到当前结点的左右子节点，再到map中找到它的父亲，如果父亲还未遍历，则入队
+        */
+        set<int>book;//记录结点是否已经遍历过
+        findTarget(root,NULL,target);
+        vector<int>res;
+        queue<TreeNode*>q;
+        q.push(target);
+        book.insert(target->val);
+        int dis = 0;//记录距离
+        while(!q.empty()){
+            int size = q.size();
+            if(dis==K)break;
+            for(int i=0;i<size;i++){
+                TreeNode *t  = q.front();
+                q.pop();
+                if(!t)continue;
+                if(t->left && book.count(t->left->val)==0){//找左孩子
+                    book.insert(t->left->val);
+                    q.push(t->left);
+                }
+                if(t->right && book.count(t->right->val)==0){//找右孩子
+                    book.insert(t->right->val);
+                    q.push(t->right);
+                }
+                if(parents.count(t->val)){//找父亲
+                    TreeNode *p = parents[t->val];
+                    if(p&&book.count(p->val)==0){
+                        book.insert(p->val);
+                        q.push(p);
+                    }
+                }
+            }
+            dis++;
+        }
+        while(!q.empty()){
+            res.push_back(q.front()->val);
+            q.pop();
+        }
+        return res;
+    }
+};
+```
+
+
 
 
 
