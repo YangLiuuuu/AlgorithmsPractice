@@ -245,6 +245,121 @@ public:
     }
 };
 ```
+---
+---
+[三数之和的多种可能](https://leetcode-cn.com/problems/3sum-with-multiplicity/)
+
+> 给定一个整数数组 A，以及一个整数 target 作为目标值，返回满足 i < j < k 且 A[i] + A[j] + A[k] == target 的元组 i, j, k 的数量。
+由于结果会非常大，请返回 结果除以 10^9 + 7 的余数。
+
+示例：
+```
+输入：A = [1,1,2,2,3,3,4,4,5,5], target = 8
+输出：20
+解释：
+按值枚举（A[i]，A[j]，A[k]）：
+(1, 2, 5) 出现 8 次；
+(1, 3, 4) 出现 8 次；
+(2, 2, 4) 出现 2 次；
+(2, 3, 3) 出现 2 次。
+
+输入：A = [1,1,2,2,2,2], target = 5
+输出：12
+解释：
+A[i] = 1，A[j] = A[k] = 2 出现 12 次：
+我们从 [1,1] 中选择一个 1，有 2 种情况，
+从 [2,2,2,2] 中选出两个 2，有 6 种情况。
+```
+- 3 <= A.length <= 3000
+- 0 <= A[i] <= 100
+- 0 <= target <= 300
+
+代码(c++)
+```c++
+class Solution {
+public:
+    int threeSumMulti(vector<int>& A, int target) {
+        /*
+        由于A[i]在0-100之间，可以用数组记录0-100之间的数字出现次数，然后选出数字之和为target数字进行组合
+        每次确定一个数字i,再寻找另外两个数字，这两个数字可以用双指针寻找，复杂度压缩为o(n)。
+        外部复杂度为o(n),总复杂度为O(n^2)
+        */
+        int mod = 1e9+7,midx = 0,t;
+        long res=0;
+        int a[101] = {0};
+        for(int i=0;i<A.size();i++){
+            a[A[i]]+=1;
+            midx = max(midx,A[i]);
+        }
+        for(int i=0;i<=target/2+1&&i<=100;i++){
+            if(a[i]<=0) continue;
+            if(i*3==target){
+                if(a[i]>=3){
+                    res=(res+(long)a[i]*(a[i]-1)*(a[i]-2)/6)%mod;
+                }
+            }else if(a[i]>=2 && target-i*2>=0 && target-i*2<=100 && a[target-i*2]>0){
+                res = (res+a[i]*(a[i]-1)/2*a[target-i*2])%mod;
+            }
+            int left = i+1,right = midx;
+            while(left<right){
+                t = i+left+right;
+                if(t>target){
+                    right--;
+                }else if(t<target){
+                    left++;
+                }else{
+                    res = (res+a[i]*a[left]*a[right])%mod;
+                    left++;
+                }
+            }
+        }
+        return res;
+    }
+};
+```
+---
+---
+[爱生气的书店老板](https://leetcode-cn.com/problems/grumpy-bookstore-owner/)
+
+> 今天，书店老板有一家店打算试营业 customers.length 分钟。每分钟都有一些顾客（customers[i]）会进入书店，所有这些顾客都会在那一分钟结束后离开。
+在某些时候，书店老板会生气。 如果书店老板在第 i 分钟生气，那么 grumpy[i] = 1，否则 grumpy[i] = 0。 当书店老板生气时，那一分钟的顾客就会不满意，不生气则他们是满意的。
+书店老板知道一个秘密技巧，能抑制自己的情绪，可以让自己连续 X 分钟不生气，但却只能使用一次。
+请你返回这一天营业下来，最多有多少客户能够感到满意的数量。
+
+示例：
+```
+输入：customers = [1,0,1,2,1,1,7,5], grumpy = [0,1,0,1,0,1,0,1], X = 3
+输出：16
+解释：
+书店老板在最后 3 分钟保持冷静。
+感到满意的最大客户数量 = 1 + 1 + 1 + 1 + 7 + 5 = 16.
+```
+代码(python3)
+```python
+class Solution:
+    '''
+    先计算老板在不能控制情绪时感到满意的顾客数量，然后用滑动窗口计算控制情绪后最大能增加多少满意的顾客
+    '''
+    def maxSatisfied(self, customers: List[int], grumpy: List[int], X: int) -> int:
+        n = len(grumpy)
+        c = 0
+        add = 0
+        for i in range(0,n):
+            c += customers[i] if grumpy[i]==0 else 0
+        i,j=0,0
+        while j<X:
+            add += customers[j] if grumpy[j]==1 else 0
+            j+=1
+        t = add
+        while j<n:
+            t -= customers[i] if grumpy[i]==1 else 0
+            i+=1
+            t += customers[j] if grumpy[j]==1 else 0
+            j+=1 
+            add = max(add,t)
+        return c+add
+```
+
 
 
 
