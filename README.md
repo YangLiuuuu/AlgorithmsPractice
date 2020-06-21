@@ -359,7 +359,107 @@ class Solution:
             add = max(add,t)
         return c+add
 ```
+---
+---
+[从根到叶的二进制数之和](https://leetcode-cn.com/problems/sum-of-root-to-leaf-binary-numbers/)
 
+> 给出一棵二叉树，其上每个结点的值都是 0 或 1 。每一条从根到叶的路径都代表一个从最高有效位开始的二进制数。例如，如果路径为 0 -> 1 -> 1 -> 0 -> 1，那么它表示二进制数 01101，也就是 13 。
+对树上的每一片叶子，我们都要找出从根到该叶子的路径所表示的数字。
+以 10^9 + 7 为模，返回这些数字之和。
+
+示例:
+![enter description here](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2019/04/05/sum-of-root-to-leaf-binary-numbers.png)
+```
+输入：[1,0,1,0,1,0,1]
+输出：22
+解释：(100) + (101) + (110) + (111) = 4 + 5 + 6 + 7 = 22
+```
+代码(c++)
+```c++
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    int mod = 1e9+7;
+    int res=0;
+    void fun(TreeNode *root,int val){
+        val = val*2+root->val;
+        if(root->left==NULL && root->right==NULL){
+            res = (res+val)%mod;
+            return;
+        }
+        if(root->left)fun(root->left,val);
+        if(root->right)fun(root->right,val);
+    }
+    int sumRootToLeaf(TreeNode* root) {
+        fun(root,0);
+        return res;
+    }
+};
+```
+---
+---
+[驼峰式匹配](https://leetcode-cn.com/problems/camelcase-matching/)
+
+> 如果我们可以将小写字母插入模式串 pattern 得到待查询项 query，那么待查询项与给定模式串匹配。（我们可以在任何位置插入每个字符，也可以插入 0 个字符。）
+给定待查询列表 queries，和模式串 pattern，返回由布尔值组成的答案列表 answer。只有在待查项 queries[i] 与模式串 pattern 匹配时， answer[i] 才为 true，否则为 false。
+
+示例:
+```
+输入：queries = ["FooBar","FooBarTest","FootBall","FrameBuffer","ForceFeedBack"], pattern = "FB"
+输出：[true,false,true,true,false]
+示例：
+"FooBar" 可以这样生成："F" + "oo" + "B" + "ar"。
+"FootBall" 可以这样生成："F" + "oot" + "B" + "all".
+"FrameBuffer" 可以这样生成："F" + "rame" + "B" + "uffer".
+
+
+输入：queries = ["FooBar","FooBarTest","FootBall","FrameBuffer","ForceFeedBack"], pattern = "FoBa"
+输出：[true,false,true,false,false]
+解释：
+"FooBar" 可以这样生成："Fo" + "o" + "Ba" + "r".
+"FootBall" 可以这样生成："Fo" + "ot" + "Ba" + "ll".
+```
+代码(python3)
+```python
+class Solution:
+    def camelMatch(self, queries: List[str], pattern: str) -> List[bool]:
+        n,plen = len(queries),len(pattern)
+        res = [False]*n
+        for i in range(n):
+            j,k,f = 0,0,1
+            while j<plen and k<len(queries[i]):
+                while k<len(queries[i]) and queries[i][k]!=pattern[j]:
+                    if pattern[j]>='a' and pattern[j]<='z':
+                        if queries[i][k]>='A' and queries[i][k]<='Z':
+                            f=0
+                            break
+                    elif pattern[j]>='A' and pattern[j]<='Z':
+                        if queries[i][k]>='A' and queries[i][k]<='Z' and queries[i][k]!=pattern[j]:
+                            f=0
+                            break
+                    k+=1
+                if k>=len(queries[i]) or queries[i][k]!=pattern[j]:
+                    f = 0
+                    break
+                j+=1
+                k+=1
+            while k<len(queries[i]):
+                if queries[i][k]>='A' and queries[i][k]<='Z':
+                    f=0
+                    break
+                k+=1
+            if f==1:
+                res[i] = True
+        return res    
+```
 
 
 
