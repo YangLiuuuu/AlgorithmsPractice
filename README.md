@@ -460,6 +460,121 @@ class Solution:
                 res[i] = True
         return res    
 ```
+---
+---
+[视频拼接](https://leetcode-cn.com/problems/video-stitching/)
+
+>你将会获得一系列视频片段，这些片段来自于一项持续时长为 T 秒的体育赛事。这些片段可能有所重叠，也可能长度不一。
+视频片段 clips[i] 都用区间进行表示：开始于 clips[i][0] 并于 clips[i][1] 结束。我们甚至可以对这些片段自由地再剪辑，例如片段 [0, 7] 可以剪切成 [0, 1] + [1, 3] + [3, 7] 三部分。
+我们需要将这些片段进行再剪辑，并将剪辑后的内容拼接成覆盖整个运动过程的片段（[0, T]）。返回所需片段的最小数目，如果无法完成该任务，则返回 -1 。
+
+示例：
+```
+输入：clips = [[0,2],[4,6],[8,10],[1,9],[1,5],[5,9]], T = 10
+输出：3
+解释：
+我们选中 [0,2], [8,10], [1,9] 这三个片段。
+然后，按下面的方案重制比赛片段：
+将 [1,9] 再剪辑为 [1,2] + [2,8] + [8,9] 。
+现在我们手上有 [0,2] + [2,8] + [8,10]，而这些涵盖了整场比赛 [0, 10]。
+
+
+输入：clips = [[0,1],[1,2]], T = 5
+输出：-1
+解释：
+我们无法只用 [0,1] 和 [0,2] 覆盖 [0,5] 的整个过程。
+
+
+输入：clips = [[0,4],[2,8]], T = 5
+输出：2
+解释：
+注意，你可能录制超过比赛结束时间的视频。
+```
+代码(python3)
+```python
+class Solution:
+    def cmp(self, lst1, lst2):
+        if lst1[0]<lst2[0]:
+            return -1
+        elif lst1[0]>lst2[0]:
+            return 1
+        elif lst1[1]<lst2[1]:
+            return 1
+        else:
+            return -1
+    def videoStitching(self, clips: List[List[int]], T: int) -> int:
+        '''
+        将区间按照左端值排序，然后贪心选择使得区间连续而且能够达到的最右区间值
+        排序O(n log n),选择O(n^2),总复杂度O(n^2)
+        '''
+        clips = sorted(clips,key=functools.cmp_to_key(self.cmp))
+        if clips[0][0]!=0:
+            return -1
+        left,right = clips[0][0],clips[0][1]
+        c,i,le = 1,1,len(clips)
+        while right<T:
+            tright = right
+            idx = -1
+            for j in range(i,le):
+                if clips[j][0]>right:
+                    break
+                if clips[j][0]<=right and clips[j][1]>=tright:
+                    idx = j
+                    tright = clips[j][1]
+            if idx==-1:
+                return -1
+            c+=1
+            left = clips[idx][0]
+            right = clips[idx][1]
+            i = idx+1
+        if right>=T:
+            return c
+        return -1
+```
+---
+---
+[节点与其祖先之间的最大差值](https://leetcode-cn.com/problems/maximum-difference-between-node-and-ancestor/)
+
+> 给定二叉树的根节点 root，找出存在于不同节点 A 和 B 之间的最大值 V，其中 V = |A.val - B.val|，且 A 是 B 的祖先。
+（如果 A 的任何子节点之一为 B，或者 A 的任何子节点是 B 的祖先，那么我们认为 A 是 B 的祖先）
+
+示例:
+![enter description here](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2019/04/12/2whqcep.jpg)
+```
+输入：[8,3,10,1,6,null,14,null,null,4,7,13]
+输出：7
+解释： 
+我们有大量的节点与其祖先的差值，其中一些如下：
+|8 - 3| = 5
+|3 - 7| = 4
+|8 - 1| = 7
+|10 - 13| = 3
+在所有可能的差值中，最大值 7 由 |8 - 1| = 7 得出。
+```
+代码(python3)
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def dfs(self,root,maxv,minv):
+        if not root:
+            return 0
+        maxv = max(maxv,root.val)
+        minv = min(minv,root.val)
+        if not root.left and not root.right:
+            return maxv-minv
+        return max(self.dfs(root.left,maxv,minv),self.dfs(root.right,maxv,minv))
+        
+    def maxAncestorDiff(self, root: TreeNode) -> int:
+        return max(self.dfs(root.left,root.val,root.val),self.dfs(root.right,root.val,root.val))        
+
+```
+
 
 
 
