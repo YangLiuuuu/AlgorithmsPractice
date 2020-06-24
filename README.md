@@ -664,7 +664,108 @@ class Solution {
     }
 }
 ```
+---
+---
+[最接近的三数之和](https://leetcode-cn.com/problems/3sum-closest/)
 
+> 给定一个包括 n 个整数的数组 nums 和 一个目标值 target。找出 nums 中的三个整数，使得它们的和与 target 最接近。返回这三个数的和。假定每组输入只存在唯一答案。
+
+示例：
+```
+输入：nums = [-1,2,1,-4], target = 1
+输出：2
+解释：与 target 最接近的和是 2 (-1 + 2 + 1 = 2) 。
+```
+
+- 3 <= nums.length <= 10^3
+- -10^3 <= nums[i] <= 10^3
+-  -10^4 <= target <= 10^4
+
+代码(java)
+```java
+class Solution {
+    public int threeSumClosest(int[] nums, int target) {
+        Arrays.sort(nums);
+        int res = nums[0]+nums[1]+nums[2];
+        int left,right,sum;
+        for (int i=0;i<nums.length;i++){
+            left = i+1;
+            right=nums.length-1;
+            while(left<right){
+                sum = nums[i]+nums[left]+nums[right];
+                if(Math.abs(sum-target)<Math.abs(res-target)){
+                    res = sum;
+                }
+                if (sum>target){
+                    right--;
+                }else if(sum<target){
+                    left++;
+                }else{
+                    return target;
+                }
+            }
+        }
+        return res;
+    }
+}
+```
+---
+---
+[两个非重叠子数组的最大和](https://leetcode-cn.com/problems/maximum-sum-of-two-non-overlapping-subarrays/)
+
+> 给出非负整数数组 A ，返回两个非重叠（连续）子数组中元素的最大和，子数组的长度分别为 L 和 M。（这里需要澄清的是，长为 L 的子数组可以出现在长为 M 的子数组之前或之后。）
+从形式上看，返回最大的 V，而 V = (A[i] + A[i+1] + ... + A[i+L-1]) + (A[j] + A[j+1] + ... + A[j+M-1]) 并满足下列条件之一：
+- 0 <= i < i + L - 1 < j < j + M - 1 < A.length, 
+- 0 <= j < j + M - 1 < i < i + L - 1 < A.length
+
+示例：
+```
+输入：A = [0,6,5,2,2,5,1,9,4], L = 1, M = 2
+输出：20
+解释：子数组的一种选择中，[9] 长度为 1，[6,5] 长度为 2。
+
+
+输入：A = [3,8,1,3,2,1,8,9,0], L = 3, M = 2
+输出：29
+解释：子数组的一种选择中，[3,8,1] 长度为 3，[8,9] 长度为 2。
+
+
+输入：A = [2,1,5,6,0,9,5,0,3,8], L = 4, M = 3
+输出：31
+解释：子数组的一种选择中，[5,6,0,9] 长度为 4，[0,3,8] 长度为 3。
+```
+- L >= 1
+- M >= 1
+- L + M <= A.length <= 1000
+- 0 <= A[i] <= 1000
+
+代码(java)
+```java
+class Solution {
+    public int maxSumTwoNoOverlap(int[] A, int L, int M) {
+        /**
+         * 先求得数组的前缀和，然后暴力穷举所有结果
+         */
+        int n = A.length;
+        int[] sum = new int[n+1];
+        for (int i=1;i<=n;i++){
+            sum[i]=sum[i-1]+A[i-1];
+        }
+        int res = Integer.MIN_VALUE;
+        for (int i=1;i<=n-1;i++){
+            for (int j=i+1;j<=n;j++){
+                if (i>=L && j-i>=M){
+                    res = Math.max(sum[i]-sum[i-L]+sum[j]-sum[j-M],res);
+                }
+                if (i>=M && j-i>=L){
+                    res = Math.max(sum[i]-sum[i-M]+sum[j]-sum[j-L],res);
+                }
+            }
+        }
+        return res;
+    }
+}
+```
 
 
 
