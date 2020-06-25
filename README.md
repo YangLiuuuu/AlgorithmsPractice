@@ -766,6 +766,128 @@ class Solution {
     }
 }
 ```
+---
+---
+139 [单词拆分](https://leetcode-cn.com/problems/word-break/)
+
+> 给定一个非空字符串 s 和一个包含非空单词列表的字典 wordDict，判定 s 是否可以被空格拆分为一个或多个在字典中出现的单词。
+拆分时可以重复使用字典中的单词。
+你可以假设字典中没有重复的单词。
+
+示例 ：
+```
+输入: s = "leetcode", wordDict = ["leet", "code"]
+输出: true
+解释: 返回 true 因为 "leetcode" 可以被拆分成 "leet code"。
+
+
+输入: s = "applepenapple", wordDict = ["apple", "pen"]
+输出: true
+解释: 返回 true 因为 "applepenapple" 可以被拆分成 "apple pen apple"。
+注意你可以重复使用字典中的单词。
+
+
+输入: s = "catsandog", wordDict = ["cats", "dog", "sand", "and", "cat"]
+输出: false
+```
+代码(java)
+```java
+class Solution {
+    public boolean wordBreak(String s, List<String> wordDict) {
+        //为了加快字符串的查找速度可以将字典中的字符加入Set
+        //用动态规划判断字符是否可以有字典中的单词拼接而成，dp[i]=1代表前i个字符是否可以拼接
+        //dp[i] = 1 if s[j:i] in wordsDict,其中0<=j<i
+        Set<String> words = new HashSet<>(wordDict);
+        int[] dp = new int[s.length()+1];
+        dp[0] = 1;
+        for (int i=1;i<=s.length();i++){
+            for (int j=0;j<i;j++){
+                if (dp[j]==1&&words.contains(s.substring(j,i))){
+                    dp[i]=1;
+                    break;
+                }
+            }
+        }
+        return dp[s.length()]==1;
+    }
+}
+```
+---
+---
+
+1035 [不相交的线](https://leetcode-cn.com/problems/uncrossed-lines/)
+
+> 我们在两条独立的水平线上按给定的顺序写下 A 和 B 中的整数。
+现在，我们可以绘制一些连接两个数字 A[i] 和 B[j] 的直线，只要 A[i] == B[j]，且我们绘制的直线不与任何其他连线（非水平线）相交。
+以这种方法绘制线条，并返回我们可以绘制的最大连线数。
+
+![enter description here](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2019/04/28/142.png)
+示例 
+```
+输入：A = [1,4,2], B = [1,2,4]
+输出：2
+解释：
+我们可以画出两条不交叉的线，如上图所示。
+我们无法画出第三条不相交的直线，因为从 A[1]=4 到 B[2]=4 的直线将与从 A[2]=2 到 B[1]=2 的直线相交。
+
+
+输入：A = [2,5,1,2,5], B = [10,5,2,1,5,2]
+输出：3
+```
+代码(java)
+```java
+class Solution {
+    public int maxUncrossedLines(int[] A, int[] B) {
+        /**
+         * 可以这样想，既然连完线后他们不想交，我们可以把连线的两个数字移动对齐
+         * 这样其实就是求两个串的最长公共子串，动态规划即可
+         */
+        int[][] dp = new int[A.length+1][B.length+1];
+        for (int i=1;i<=A.length;i++){
+            for (int j=1;j<=B.length;j++){
+                if (A[i-1]==B[j-1]){
+                    dp[i][j] = dp[i-1][j-1]+1;
+                }else{
+                    dp[i][j] = Math.max(dp[i-1][j],dp[i][j-1]);
+                }
+            }
+        }
+        return dp[A.length][B.length];
+    }
+}
+```
+---
+---
+1037[有效的回旋镖](https://leetcode-cn.com/problems/valid-boomerang/)
+
+> 回旋镖定义为一组三个点，这些点各不相同且不在一条直线上。
+给出平面上三个点组成的列表，判断这些点是否可以构成回旋镖。
+
+示例
+```
+输入：[[1,1],[2,3],[3,2]]
+输出：true
+
+输入：[[1,1],[2,2],[3,3]]
+输出：false
+```
+代码(python3)
+```python
+class Solution:
+    def isBoomerang(self, points: List[List[int]]) -> bool:
+        '''
+        三个点可以得到两个向量，判断向量是否平行即可
+        若向量a(x1,y1),b(x2,y2)平行，有a=kb,则x1*y2=y1*x2
+        '''
+        a1 = [points[1][0]-points[0][0],points[1][1]-points[0][1]]
+        a2 = [points[2][0]-points[1][0],points[2][1]-points[1][1]]
+        return a1[0]*a2[1]!=a1[1]*a2[0]
+
+```
+
+
+
+
 
 
 
