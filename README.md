@@ -884,6 +884,106 @@ class Solution:
         return a1[0]*a2[1]!=a1[1]*a2[0]
 
 ```
+---
+---
+[移除重复节点](https://leetcode-cn.com/problems/remove-duplicate-node-lcci/)
+
+> 编写代码，移除未排序链表中的重复节点。保留最开始出现的节点。
+
+示例
+```
+输入：[1, 2, 3, 3, 2, 1]
+输出：[1, 2, 3]
+
+
+ 输入：[1, 1, 1, 1, 2]
+ 输出：[1, 2]
+```
+
+代码·(python3)
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def removeDuplicateNodes(self, head: ListNode) -> ListNode:
+        if not head:
+            return head
+        book = set()
+        p = ListNode(0)
+        r = p
+        p.next = head
+        q = head
+        while q:
+            while q and q.val in book:
+                q = q.next
+            if q:
+                book.add(q.val)
+            p.next = q
+            p=q
+            q = q.next if q else None
+        return r.next
+```
+---
+---
+1041[困于环中的机器人](https://leetcode-cn.com/problems/robot-bounded-in-circle/)
+
+> 在无限的平面上，机器人最初位于 (0, 0) 处，面朝北方。机器人可以接受下列三条指令之一： "G"：直走 1 个单位, "L"：左转 90
+> 度 ,"R"：右转 90 度
+> 机器人按顺序执行指令 instructions，并一直重复它们。
+只有在平面中存在环使得机器人永远无法离开时，返回 true。否则，返回 false。
+
+示例
+```
+输入："GGLLGG"
+输出：true
+解释：
+机器人从 (0,0) 移动到 (0,2)，转 180 度，然后回到 (0,0)。
+重复这些指令，机器人将保持在以原点为中心，2 为半径的环中进行移动。
+
+输入："GG"
+输出：false
+解释：
+机器人无限向北移动。
+
+输入："GL"
+输出：true
+解释：
+机器人按 (0, 0) -> (0, 1) -> (-1, 1) -> (-1, 0) -> (0, 0) -> ... 进行移动。
+```
+- 1 <= instructions.length <= 100
+- instructions[i] 在 {'G', 'L', 'R'} 中
+
+代码(python3)
+```python
+class Solution:
+    def isRobotBounded(self, instructions: str) -> bool:
+        '''
+        如果一轮指令后机器人回到了原点，那么它肯定是循环的，无法离开这个环
+        如果一轮指令后机器人没有回到原点，这时判断它的方向是否仍然指向北方，如果指向北方，那下一轮指令机器人还会
+        往北方走，这么一来它会无限往北方走。而一轮指令过后机器人指向其他方向，那经过四轮指令过后，机器人肯定会回
+        到原点，而且它的行动轨迹是一个正方形
+        '''
+        dire,x,y = 0,0,0
+        for ins in instructions:
+            if ins == 'G':
+                if dire==0:
+                    y+=1
+                elif dire==1:
+                    x+=1
+                elif dire==2:
+                    y-=1
+                else:
+                    x-=1
+            elif ins=='L':
+                dire = dire-1 if dire>0 else 3
+            else:
+                dire = (dire+1)%4
+        return (x==0 and y==0) or (dire!=0)
+```
 
 
 
