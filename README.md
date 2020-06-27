@@ -984,6 +984,89 @@ class Solution:
                 dire = (dire+1)%4
         return (x==0 and y==0) or (dire!=0)
 ```
+---
+---
+1042 [不邻接植花](https://leetcode-cn.com/problems/flower-planting-with-no-adjacent/)
+
+> 有 N 个花园，按从 1 到 N 标记。在每个花园中，你打算种下四种花之一。
+paths[i] = [x, y] 描述了花园 x 到花园 y 的双向路径。
+另外，没有花园有 3 条以上的路径可以进入或者离开。
+你需要为每个花园选择一种花，使得通过路径相连的任何两个花园中的花的种类互不相同。
+以数组形式返回选择的方案作为答案 answer，其中 answer[i] 为在第 (i+1) 个花园中种植的花的种类。花的种类用  1, 2, 3, 4 表示。保证存在答案。
+
+示例
+```
+输入：N = 3, paths = [[1,2],[2,3],[3,1]]
+输出：[1,2,3]
+
+
+输入：N = 4, paths = [[1,2],[3,4]]
+输出：[1,2,1,2]
+
+
+输入：N = 4, paths = [[1,2],[2,3],[3,4],[4,1],[1,3],[2,4]]
+输出：[1,2,3,4]
+```
+- 1 <= N <= 10000
+- 0 <= paths.size <= 20000
+- 不存在花园有 4 条或者更多路径可以进入或离开。
+- 保证存在答案。
+代码(python3)
+```python
+class Solution:
+    def gardenNoAdj(self, N: int, paths: List[List[int]]) -> List[int]:
+        '''
+        本题以邻接矩阵建图会超出内存，要使用邻接表建立，题目意思相当于为结点染色
+        遍历图中结点，再遍历一遍该结点的邻接结点，并记录其邻接结点的颜色
+        由于一个结点最多有三个邻接结点，而我们有四种颜色可以选择，所以总会用一种颜色还没有被邻接结点使用
+        选择为使用的颜色为该结点颜色
+        '''
+        book = [0,0,0,0]
+        graph = [[]for i in range(N)]
+        res = [0 for i in range(N)]
+        for pos in paths:
+            graph[pos[0]-1].append(pos[1]-1)
+            graph[pos[1]-1].append(pos[0]-1)
+        for i in range(N):
+            if res[i]!=0:
+                continue
+            book = [0,0,0,0]
+            for j in graph[i]:
+                if res[j]!=0:
+                    book[res[j]-1]=1
+            for j in range(4):
+                if book[j]==0:
+                    color = j
+                    break
+            res[i] = color+1
+        return res
+```
+
+1047 [ 删除字符串中的所有相邻重复项](https://leetcode-cn.com/problems/remove-all-adjacent-duplicates-in-string/)
+
+> 给出由小写字母组成的字符串 S，重复项删除操作会选择两个相邻且相同的字母，并删除它们。 在 S 上反复执行重复项删除操作，直到无法继续删除。
+> 在完成所有重复项删除操作后返回最终的字符串。答案保证唯一。
+
+示例：
+```
+输入："abbaca"
+输出："ca"
+解释：
+例如，在 "abbaca" 中，我们可以删除 "bb" 由于两字母相邻且相同，这是此时唯一可以执行删除操作的重复项。之后我们得到字符串 "aaca"，其中又只有 "aa" 可以执行重复项删除操作，所以最后的字符串为 "ca"。
+```
+```python
+class Solution:
+    def removeDuplicates(self, S: str) -> str:
+        stack = []
+        for s in S:
+            if len(stack)>0 and stack[-1]==s:
+                stack.pop()
+            else:
+                stack.append(s)
+        return ''.join(stack)
+```
+
+
 
 
 
