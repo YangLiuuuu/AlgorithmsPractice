@@ -605,6 +605,8 @@ class Solution {
     }
 }
 ```
+---
+---
 [距离顺序排列矩阵单元格](https://leetcode-cn.com/problems/matrix-cells-in-distance-order/)
 
 >给出 R 行 C 列的矩阵，其中的单元格的整数坐标为 (r, c)，满足 0 <= r < R 且 0 <= c < C。
@@ -1041,6 +1043,8 @@ class Solution:
             res[i] = color+1
         return res
 ```
+---
+---
 
 1047 [ 删除字符串中的所有相邻重复项](https://leetcode-cn.com/problems/remove-all-adjacent-duplicates-in-string/)
 
@@ -1065,6 +1069,96 @@ class Solution:
                 stack.append(s)
         return ''.join(stack)
 ```
+---
+---
+209 [长度最小的子数组
+](https://leetcode-cn.com/problems/minimum-size-subarray-sum/)
+
+> 给定一个含有 n 个正整数的数组和一个正整数 s ，找出该数组中满足其和 ≥ s
+> 的长度最小的连续子数组，并返回其长度。如果不存在符合条件的连续子数组，返回 0。
+
+示例: 
+```
+输入: s = 7, nums = [2,3,1,2,4,3]
+输出: 2
+解释: 子数组 [4,3] 是该条件下的长度最小的连续子数组。
+```
+代码(python3)
+```python
+class Solution:
+    def minSubArrayLen(self, s: int, nums: List[int]) -> int:
+        #典型滑动窗口
+        n, c = len(nums), 0
+        left,right = 0,0,
+        res = 0x7fffffff
+        while right<n:
+            while right<n and c<s:
+                c+=nums[right]
+                right+=1
+            while c>=s:
+                c-=nums[left]
+                left+=1
+            res = min(right-left+1,res)
+        return res if res<=n else 0
+```
+---
+---
+1053 [ 交换一次的先前排列](https://leetcode-cn.com/problems/previous-permutation-with-one-swap/)
+
+> 给你一个正整数的数组 A（其中的元素不一定完全不同），请你返回可在 一次交换（交换两数字 A[i] 和 A[j]
+> 的位置）后得到的、按字典序排列小于 A 的最大可能排列。 如果无法这么操作，就请返回原数组。
+
+示例：
+```
+输入：[3,2,1]
+输出：[3,1,2]
+解释：
+交换 2 和 1
+
+
+输入：[1,1,5]
+输出：[1,1,5]
+解释： 
+这已经是最小排列
+
+
+输入：[1,9,4,6,7]
+输出：[1,7,4,6,9]
+解释：
+交换 9 和 7
+```
+- 1 <= A.length <= 10000
+- 1 <= A[i] <= 10000
+
+代码(python3)
+```python
+class Solution:
+    def prevPermOpt1(self, A: List[int]) -> List[int]:
+        '''
+        为了能使得找到的结果恰好字典序比原值大，要从后往前找
+        找到第一个下标，有A[i]>A[i+1],这个A[i]必定是要交换到后面去的
+        为了使得交换后的字典序最大，被交换的数字要尽可能大而且小于A[i]
+        '''
+        n = len(A)
+        i = n-2
+        while i>=0:
+            if A[i]>A[i+1]:
+                break
+            i-=1
+        if i<0:
+            return A
+        j = i
+        i+=1
+        c=i
+        while i<n:
+            if A[c]<A[i]<A[j]:
+                c=i
+            i+=1
+        A[j],A[c]=A[c],A[j]
+        return A
+```
+---
+---
 
 
 
