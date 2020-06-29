@@ -1,4 +1,920 @@
+---
+title: 算法练习
+tags: 算法
+grammar_cjkRuby: true
+---
 
+1. [奇偶链表](https://leetcode-cn.com/problems/odd-even-linked-list/)
+>给定一个单链表，把所有的奇数节点和偶数节点分别排在一起。请注意，这里的奇数节点和偶数节点指的是节点编号的奇偶性，而不是节点的值的奇偶性。
+请尝试使用原地算法完成。你的算法的空间复杂度应为 O(1)，时间复杂度应为 O(nodes)，nodes 为节点总数。
+
+示例1:
+```
+输入: 1->2->3->4->5->NULL
+输出: 1->3->5->2->4->NULL
+```
+示例2：
+```
+输入: 2->1->3->5->6->4->7->NULL 
+输出: 2->3->6->7->1->5->4->NULL
+```
+代码(c++)
+```c++
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* oddEvenList(ListNode* head) {
+        if(!head||!head->next) return head;
+        ListNode *h1=head,*h2=head->next,*p=h2->next,*p1=h1,*p2=h2;
+        int c = 0;
+        while(p){
+            if(c){
+                //奇结点
+                p2->next = p;
+                p2=p;
+                c = 0;
+            }else{
+                //偶结点
+                p1->next = p;
+                p1 = p;
+                c = 1;
+            }
+            p=p->next;
+        }
+        p1->next = h2;
+        p2->next = NULL;
+        return h1;
+    }
+};
+```
+---
+---
+2. [重新安排行程](https://leetcode-cn.com/problems/reconstruct-itinerary/)
+
+> 给定一个机票的字符串二维数组 [from, to]，子数组中的两个成员分别表示飞机出发和降落的机场地点，对该行程进行重新规划排序。所有这些机票都属于一个从JFK（肯尼迪国际机场）出发的先生，所以该行程必须从 JFK 出发。
+
+说明:
+1. 如果存在多种有效的行程，你可以按字符自然排序返回最小的行程组合。例如，行程 ["JFK", "LGA"] 与 ["JFK", "LGB"] 相比就更小，排序更靠前
+2. 所有的机场都用三个大写字母表示（机场代码）。
+3. 假定所有机票至少存在一种合理的行程。
+
+示例1：
+```
+输入: [["MUC", "LHR"], ["JFK", "MUC"], ["SFO", "SJC"], ["LHR", "SFO"]]
+输出: ["JFK", "MUC", "LHR", "SFO", "SJC"]
+```
+示例2：
+```
+输入: [["JFK","SFO"],["JFK","ATL"],["SFO","ATL"],["ATL","JFK"],["ATL","SFO"]]
+输出: ["JFK","ATL","JFK","SFO","ATL","SFO"]
+解释: 另一种有效的行程是 ["JFK","SFO","ATL","JFK","ATL","SFO"]。但是它自然排序更大更靠后。
+```
+代码(java)
+```java
+/**
+ * 自己做出来了但是效率很低，代码冗长。
+ * 主要思路
+ * 先构造图，将所有票中的机场名称加入TreeSet，TreeSet会去重而且排好序
+ * 然后建立机场名称和排序下标的双向映射，分别以Map和List建立，这样是方便待会进行dfs和图邻接矩阵的建立
+ * 然后按照dfs回溯，每经过一条路径，将路径上的权值减一，当所有机票都走过后就获取了路线
+ * 由于邻接矩阵是按照机场名称排序建立的，这样获得的路线一定是字典序最小的
+ * 最后根据路线记录id将所有机场名称加入结果集
+ */
+public class Solution {
+    Stack<Integer> flightRecord = new Stack<>();
+    int c;
+    boolean dfs(int[][] matrix,int cur,int count){
+        if (count==c){
+            return true;//所有路线已经走完
+        }
+        for(int i=0;i<matrix.length;i++){
+            if (matrix[cur][i]>=1){//dfs回溯
+                matrix[cur][i]-=1;//这条路线已经走过，消除它
+                flightRecord.push(i);//记录机场编号
+                if (dfs(matrix,i,count+1))return true;//这条路已经走通，直接返回
+                flightRecord.pop();//上面的路走不通，回溯
+                matrix[cur][i] += 1;
+            }
+        }
+        return false;
+    }
+
+    public List<String> findItinerary(List<List<String>> tickets) {
+        TreeSet<String> airPorts = new TreeSet<>();
+        for (List<String> ticket:tickets){
+            airPorts.addAll(ticket);
+        }
+        int idx=0,start=0;
+        Map<String,Integer> map = new HashMap<>();
+        List<String>airPortId = new ArrayList<>();
+        for (String airPort : airPorts) {
+            map.put(airPort, idx);//机场名称到下标的映射
+            airPortId.add(airPort);//下标到机场名称的映射，根据id获取机场名即可
+            if (airPort.equals("JFK")) start=idx;//记录起点
+            idx++;
+        }
+        int[][] matrix = new int[idx][idx];//图的邻接矩阵
+        for (List<String> ticket:tickets){//建立矩阵
+            int from = map.get(ticket.get(0)),to = map.get(ticket.get(1));
+            matrix[from][to] += 1;//会有重复的机票，每经过一次加1
+        }
+        c = tickets.size();
+        flightRecord.push(start);//最开始已经在JFK机场
+        dfs(matrix,start,0);
+        List<String> res = new ArrayList<>();
+        for (Integer id:flightRecord){
+            res.add(airPortId.get(id));//根据路线记录的id将机场名称按顺序加入结果集
+        }
+        return res;
+    }
+}
+```
+---
+---
+3. [前 K 个高频元素](https://leetcode-cn.com/problems/top-k-frequent-elements/)
+
+> 给定一个非空的整数数组，返回其中出现频率前 k 高的元素。
+
+示例 1:
+```
+输入: nums = [1,1,1,2,2,3], k = 2
+输出: [1,2]
+```
+
+示例 2:
+```
+输入: nums = [1], k = 1
+输出: [1]
+```
+提示：
+- 你可以假设给定的 k 总是合理的，且 1 ≤ k ≤ 数组中不相同的元素的个数。
+- 你的算法的时间复杂度必须优于 O(n log n) , n 是数组的大小。
+- 题目数据保证答案唯一，换句话说，数组中前 k 个高频元素的集合是唯一的。
+- 你可以按任意顺序返回答案。
+
+代码(java)
+```java
+/**
+     * map记录每个数字出现的次数
+     * 然后将map以二维数组的形式表示
+     * 对二维数组排序，比较时按照第二个值即频率比较
+     * 然后取出频率前k高的
+     *
+     * 记录出现次数O(n),排序O(n Log n)
+     * 总复杂度O(n log n)
+     */
+class Solution {
+    public int[] topKFrequent(int[] nums, int k) {
+        Map<Integer,Integer>map = new HashMap<>();
+        for(int i:nums){
+            if(map.containsKey(i)){
+                map.put(i,map.get(i)+1);
+            }else{
+                map.put(i,1);
+            }
+        }
+        int[][] list = new int[map.size()][2];
+        int i=0;
+        for (Map.Entry<Integer,Integer> entry:map.entrySet()){
+            list[i][0]=entry.getKey();
+            list[i][1]=entry.getValue();
+            i+=1;
+        }
+        Arrays.sort(list, new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                if (o1[1]==o2[1])return 0;
+                return o1[1]<o2[1]?-1:1;
+            }
+        });
+        int size = list.length;
+        int[] res = new int[k];
+        for (int j=0;j<k;j++){
+            res[j] = list[size-1-j][0];
+        }
+        return res;
+    }
+}
+```
+---
+---
+
+1. [三数之和](https://leetcode-cn.com/problems/3sum/)
+> 给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有满足条件且不重复的三元组。
+> 注意：答案中不可以包含重复的三元组。
+
+示例：
+```
+给定数组 nums = [-1, 0, 1, 2, -1, -4]，
+
+满足要求的三元组集合为：
+[
+  [-1, 0, 1],
+  [-1, -1, 2]
+]
+```
+
+代码(python3)
+```python
+'''
+将列表数据排序，然后开始查找
+首先确定一个数nums[i]，再确定另外两个数，另外两个数按按以下方式寻找。首先给定两个指针，left=i+1,right=len(nums)-1,如果nums[i]+nums[left]+nums[right]<0，则将left指针右移，如果nums[i]+nums[left]+nums[right]>0，则将right指针左移。这样每个nums[i]总能找到与之对应的另外两个数
+排序时间复杂度为O(n log n),确定其中一个数为O(n),内部循环确定另外两个数用到了序列有序的性质，只需要O(n),这个总循环为O(n^2),总时间复杂度为O(n^2)
+'''
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        nums.sort()
+        le = len(nums)
+        i=0
+        res = []
+        while i<len(nums)-2 and nums[i]<=0:
+            if i>0 and nums[i]==nums[i-1]:
+                i+=1
+                continue
+            left = i+1
+            right = len(nums)-1
+            while left<right:#左右同时查找
+                if nums[i]+nums[left]+nums[right]<0:
+                    left+=1
+                elif nums[i]+nums[left]+nums[right]>0:
+                    right-=1
+                else:
+                    tr = [nums[i],nums[left],nums[right]]
+                    res.append(tr)
+                    left+=1
+                    while left<right and nums[left]==nums[left-1]:#去重
+                        left+=1
+            i+=1
+        return res
+```
+---
+---
+2. [字典序排数](https://leetcode-cn.com/problems/lexicographical-numbers/)
+
+> 给定一个整数 n, 返回从 1 到 n 的字典顺序。
+例如，
+给定 n =1 3，返回 [1,10,11,12,13,2,3,4,5,6,7,8,9] 。
+请尽可能的优化算法的时间复杂度和空间复杂度。 输入的数据 n 小于等于 5,000,000。
+
+代码(python3)
+```python
+'''
+以n=1000为例
+添加顺序为1，10,100,101,102,103...
+每次对前一个数乘以10，也就是添加一个0，如果满足小于n则加入结果集，否则将他整除10，再加1，继续判断
+'''
+class Solution:
+    def lexicalOrder(self, n: int) -> List[int]:
+        res = []
+        cur = 1
+        for i in range(n):
+            res.append(cur)
+            if cur*10<=n:
+                cur*=10
+            else:
+                if cur>=n:
+                    cur//=10
+                cur+=1
+                while cur%10==0:
+                    cur//=10
+        return res;
+
+```
+---
+---
+3. [图书管理员](https://www.luogu.com.cn/problem/P3955)
+
+> 图书馆中每本书都有一个图书编码，可以用于快速检索图书，这个图书编码是一个 正整数。 每位借书的读者手中有一个需求码，这个需求码也是一个正整数。如果一本书的图 书编码恰好以读者的需求码结尾，那么这本书就是这位读者所需要的。 小 D 刚刚当上图书馆的管理员，她知道图书馆里所有书的图书编码，她请你帮她写 一个程序，对于每一位读者，求出他所需要的书中图书编码最小的那本书，如果没有他 需要的书，请输出-1。
+
+输入格式
+
+> 第一行，包含两个正整数 n , q。n,q，以一个空格分开，分别代表图书馆里 书的数量和读者的数量。
+> 
+> 接下来的 n 行，每行包含一个正整数，代表图书馆里某本书的图书编码。
+> 
+> 接下来的 q 行，每行包含两个正整数，以一个空格分开，第一个正整数代表图书馆 里读者的需求码的长度，第二个正整数代表读者的需求码。
+
+输出格式
+
+> q 行，每行包含一个整数，如果存在第 i 个读者所需要的书，则在第 i 行输出第 i 个读者所需要的书中图书编码最小的那本书的图书编码，否则输出-1。
+
+输入输出样例
+
+输入
+```
+5 5 
+2123 
+1123 
+23 
+24 
+24 
+2 23 
+3 123 
+3 124 
+2 12 
+2 12
+```
+输出
+```
+23 
+1123 
+-1 
+-1 
+-1 
+```
+
+代码(python3)
+```
+def judge(s1,s2):
+    i = len(s1)-1
+    j = len(s2)-1
+    while i>=0 and j>=0 and s1[i]==s2[j]:
+        i-=1
+        j-=1
+    return j<0
+
+n,q = map(int,input().split())
+lst = []
+for i in range(n):
+    t = int(input())
+    lst.append(t)
+lst.sort()
+res = []
+for i in range(q):
+    le,num= input().split()
+    f=0
+    for n in lst:
+        if judge(str(n),num):
+            f=1
+            res.append(n)
+            break
+    if f==0:
+        res.append(-1)
+
+for i in res:
+    print(i)
+```
+---
+---
+1. 删除二叉树结点
+
+> 给定一个二叉搜索树的根节点 root 和一个值 key，删除二叉搜索树中的 key 对应的节点，并保证二叉搜索树的性质不变。返回二叉搜索树（有可能被更新）的根节点的引用。
+一般来说，删除节点可分为两个步骤：
+首先找到需要删除的节点；
+如果找到了，删除它。
+说明： 要求算法时间复杂度为 O(h)，h 为树的高度。
+
+示例:
+```
+root = [5,3,6,2,4,null,7]
+key = 3
+
+    5
+   / \
+  3   6
+ / \   \
+2   4   7
+
+给定需要删除的节点值是 3，所以我们首先找到 3 这个节点，然后删除它。
+
+一个正确的答案是 [5,4,6,2,null,null,7], 如下图所示。
+
+    5
+   / \
+  4   6
+ /     \
+2       7
+
+另一个正确答案是 [5,2,6,null,4,null,7]。
+
+    5
+   / \
+  2   6
+   \   \
+    4   7
+```
+代码(python3)
+```
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def deleteNode(self, root: TreeNode, key: int) -> TreeNode:
+        if root == None:
+            return root
+        if root.val == key:
+            if root.left == None:
+                return root.right
+            elif root.right == None:
+                return root.left
+            else:
+                node = root.right
+                while node.left:
+                    node = node.left
+                node.left = root.left
+                return root.right
+        elif root.val > key:
+            root.left = self.deleteNode(root.left,key);
+        else:
+            root.right = self.deleteNode(root.right,key);
+        return root 
+```
+---
+---
+2. [两个字符串的删除操作](https://leetcode-cn.com/problems/delete-operation-for-two-strings/)
+
+> 给定两个单词 word1 和 word2，找到使得 word1 和 word2 相同所需的最小步数，每步可以删除任意一个字符串中的一个字符。
+
+示例：
+```
+输入: "sea", "eat"
+输出: 2
+解释: 第一步将"sea"变为"ea"，第二步将"eat"变为"ea"
+```
+代码(python3)
+```python
+'''
+先求出两个串的最长公共子序列，假设其长度为n，那么需要修改的步数就为len1-n+len2-n,即len1+len2-2*n
+'''
+class Solution:
+    def minDistance(self, word1: str, word2: str) -> int:
+        len1 = len(word1)
+        len2 = len(word2)
+        dp = [[0]*(len2+1) for i in range(len1+1)]
+        for i in range(1,len1+1):
+            for j in range(1,len2+1):
+                # print(dp[i][j],end=' ')
+                if word1[i-1]==word2[j-1]:
+                    dp[i][j] = dp[i-1][j-1]+1
+                else:
+                    dp[i][j] = max(dp[i-1][j],dp[i][j-1])
+
+        return len1+len2-2*dp[len1][len2]
+```
+
+---
+---
+3. [单词替换](https://leetcode-cn.com/problems/replace-words/)
+
+> 在英语中，我们有一个叫做 词根(root)的概念，它可以跟着其他一些词组成另一个较长的单词——我们称这个词为 继承词(successor)。例如，词根an，跟随着单词 other(其他)，可以形成新的单词 another(另一个)。
+现在，给定一个由许多词根组成的词典和一个句子。你需要将句子中的所有继承词用词根替换掉。如果继承词有许多可以形成它的词根，则用最短的词根替换它。
+你需要输出替换之后的句子。
+
+示例
+```
+输入：dict(词典) = ["cat", "bat", "rat"] sentence(句子) = "the cattle was rattled by the battery"
+输出："the cat was rat by the bat"
+```
+
+说明
+- 输入只包含小写字母。
+- 1 <= dict.length <= 1000
+- 1 <= dict[i].length <= 100
+- 1 <= 句中词语数 <= 1000
+- 1 <= 句中词语长度 <= 1000
+- 词根在单词开头处
+代码(python3)
+```python
+class Solution:
+    def replaceWords(self, dict: List[str], sentence: str) -> str:
+        res=''
+        dic = set(dict)
+        for s in sentence.split():
+            tlen = 10001
+            for i in range(len(s)):
+                if s[0:i+1] in dic and i+1<tlen:
+                    res+=str(s[0:i+1])
+                    tlen = i+1
+                    break
+            if tlen==10001:
+                res+=s
+            res+=' '
+        return res.strip()
+```
+---
+---
+
+1. [转变数组后最接近目标值的数组和](https://leetcode-cn.com/problems/sum-of-mutated-array-closest-to-target/)
+
+> 给你一个整数数组 arr 和一个目标值 target ，请你返回一个整数 value ，使得将数组中所有大于 value 的值变成 value 后，数组的和最接近  target （最接近表示两者之差的绝对值最小）。
+如果有多种使得和最接近 target 的方案，请你返回这些整数中的最小值。
+请注意，答案不一定是 arr 中的数字。
+
+示例 1：
+```
+输入：arr = [4,9,3], target = 10
+输出：3
+解释：当选择 value 为 3 时，数组会变成 [3, 3, 3]，和为 9 ，这是最接近 target 的方案。
+```
+示例2：
+```
+输入：arr = [2,3,5], target = 10
+输出：5
+```
+示例3：
+```
+输入：arr = [60864,25176,27249,21296,20204], target = 56803
+输出：11361
+```
+说明:
+- 1 <= arr.length <= 10^4
+- 1 <= arr[i], target <= 10^5
+代码(python3)
+```python
+'''
+暴力解，先将列表排序，从头开始累加，设累加和为s，当前累加到第i个。每次计算s+(n-i)*arr[i]是否大于等于target，如果已经大于等于target，那么答案一定在arr[i]和arr[i-1]之间，此时退出循环，进一步处理答案。进一步处理直接计算t = (target-s)/(n-i)，这个值要么是t,要么是t+1
+'''
+class Solution:
+    def findBestValue(self, arr: List[int], target: int) -> int:
+        arr.sort()
+        n = len(arr)
+        if arr[0]*n>=target:
+            if abs(target//n*n-target)<=abs((target//n+1)*n-target):
+                return target//n
+            else:
+                return target//n+1
+        else:
+            s=0
+            i=0
+            while i < n and s+(n-i)*arr[i]<target:
+                s+=arr[i]
+                i+=1
+            if i==n:
+                return arr[n-1]
+            else:
+                #print(i,s)
+                ntar = target-s
+                l = n-i
+                #print(ntar,l)
+                if abs(ntar//l*l-ntar) <= abs((ntar//l+1)*l-ntar):
+                    return ntar//l
+                else:
+                    return ntar//l+1
+                    
+```
+---
+---
+2. [二叉搜索树中的众数](https://leetcode-cn.com/problems/find-mode-in-binary-search-tree/)
+
+> 给定一个有相同值的二叉搜索树（BST），找出 BST 中的所有众数（出现频率最高的元素）。
+
+例如：
+给定 BST [1,null,2,2],
+```
+ 1
+    \
+     2
+    /
+   2
+```
+返回[2]. 如果众数超过1个，不需考虑输出顺序
+代码(python3)
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def findMode(self, root: TreeNode) -> List[int]: 
+        res = [] #结果集
+        if not root:
+            return res
+        maxcnt = 0 #出现的最多次数
+        cnt = 0 #当前数字出现的次数
+        cur = None #当前数字
+        stack = []
+        p = root
+        while p or stack:
+            if p:
+                stack.append(p)
+                p = p.left
+            else:
+                p = stack.pop()
+                #print(cur)
+                if p.val==cur:
+                    cnt+=1
+                else:
+                    if cnt>maxcnt:
+                        maxcnt = cnt
+                        res.clear()
+                        res.append(cur)
+                    elif cnt==maxcnt:
+                        res.append(cur)
+                    cur=p.val
+                    cnt=1
+                p = p.right
+        if cnt>maxcnt:
+            res.clear()
+            res.append(cur)
+        elif cnt==maxcnt:
+            res.append(cur)
+        return res
+```
+3. [出界的路径数](https://leetcode-cn.com/problems/out-of-boundary-paths/)
+
+> 给定一个 m × n 的网格和一个球。球的起始坐标为 (i,j) ，你可以将球移到相邻的单元格内，或者往上、下、左、右四个方向上移动使球穿过网格边界。但是，你最多可以移动 N 次。找出可以将球移出边界的路径数量。答案可能非常大，返回 结果 mod 109 + 7 的值。
+
+示例:
+```
+输入: m = 2, n = 2, N = 2, i = 0, j = 0
+输出: 6
+```
+解释：
+![enter description here](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/10/12/out_of_boundary_paths_1.png)
+
+说明:
+- 球一旦出界，就不能再被移动回网格内。
+- 网格的长度和高度在 [1,50] 的范围内。
+- N 在 [0,50] 的范围内。
+代码(python3)
+```python
+'''
+#记忆化递归，用book[i][j][k]记录剩余k步，当前坐标为(i,j)时有多少种方法，初始化为-1，当前递归到(i，j，k)时判断book[i][j][k]是否大于0，如果大于0直接返回，这样能够优化深度优先的复杂度，不至于超时
+'''
+class Solution:
+    ##还剩k步可走，坐标为(i,j)，有多少种走法可以出界
+    def dfs(self,m,n,i,j,k,book):
+        if i<0 or j<0 or i>=m or j>=n:
+            return 1
+        if k<=0:
+            return 0
+        if book[i][j][k]>=0:
+            return book[i][j][k]
+        steps = self.dfs(m,n,i-1,j,k-1,book)+self.dfs(m,n,i+1,j,k-1,book)+self.dfs(m,n,i,j-1,k-1,book)+self.dfs(m,n,i,j+1,k-1,book);
+        steps %= 1000000007
+        book[i][j][k] = steps
+        return steps
+        
+    def findPaths(self, m: int, n: int, N: int, i: int, j: int) -> int:
+        #book[i][j][k]记录还剩k步可以走，当前坐标为(i,j)时，有多少种走法
+        book = [[[-1]*(N+1) for j in range(n)] for i in range(m)]
+        return self.dfs(m,n,i,j,N,book)%1000000007
+
+```
+---
+---
+1. [最长公共前缀](https://leetcode-cn.com/problems/longest-common-prefix/)
+
+> 编写一个函数来查找字符串数组中的最长公共前缀。
+如果不存在公共前缀，返回空字符串 ""。
+
+示例1:
+```
+输入: ["flower","flow","flight"]
+输出: "fl"
+```
+示例2:
+```
+输入: ["dog","racecar","car"]
+输出: ""
+解释: 输入不存在公共前缀。
+```
+代码(python3)
+```python
+class Solution:
+    def longestCommonPrefix(self, strs: List[str]) -> str:
+        if len(strs)==0:
+             return ""
+        res = strs[0]
+        for i in range(1,len(strs)):
+            j = 0
+            while j < min(len(res),len(strs[i])) and strs[i][j]==res[j]:
+                j+=1
+            res = res[:j]
+        return res
+```
+
+---
+---
+2. [最大交换](https://leetcode-cn.com/problems/maximum-swap/)
+
+> 给定一个非负整数，你至多可以交换一次数字中的任意两位。返回你能得到的最大值。
+
+示例.
+```
+输入: 2736
+输出: 7236
+解释: 交换数字2和数字7。
+
+输入: 9973
+输出: 9973
+解释: 不需要交换。
+```
+代码(python3
+```python
+'''
+数字逐渐递减一定是最大值。
+如果数字能够交换得到更大的数字，这个数可以分为两部分。前半部分数字是递减的(相等也视作递减)，出现第一次递增的后面全部是第二部分。只要从后半部分中找到最大的数字，且越靠后越好，把它与前面最大的且小于它的数字交换即可得到答案。
+每次循环都为O(n)，总体复杂度为O(n)
+'''
+class Solution:
+    def maximumSwap(self, num: int) -> int:
+        i = 1
+        num = list(str(num))
+        while i<len(num) and num[i]<=num[i-1]:
+            i+=1
+        if i==len(num):
+             return int("".join(num))
+        j = i-1
+        mi = i 
+        while i<len(num):
+            mi = i if num[i]>=num[mi] else mi
+            i+=1
+        f=0
+        while j>=0 and num[mi]>num[j]:
+            f=1
+            j-=1
+        if f==1:
+            j+=1
+        num[j],num[mi] = num[mi],num[j]
+        return int("".join(num))
+```
+---
+---
+1. [剪绳子](https://www.nowcoder.com/practice/57d85990ba5b440ab888fc72b0751bf8?tpId=13&&tqId=33257&rp=1&ru=/ta/coding-interviews&qru=/ta/coding-interviews/question-ranking)
+
+> 给你一根长度为n的绳子，请把绳子剪成整数长的m段（m、n都是整数，n>1并且m>1），每段绳子的长度记为k[0],k[1],...,k[m]。请问k[0]xk[1]x...xk[m]可能的最大乘积是多少？例如，当绳子的长度是8时，我们把它剪成长度分别为2、3、3的三段，此时得到的最大乘积是18。
+
+输入一个数，输出结果
+
+代码(java）
+```java
+public class Solution {
+/**
+*动态规划，设dp[i]是前i米剪完之后能得到的最大乘积，那么
+*dp[i] = max(dp[j]*(i-j))，其中1<=j<i
+*还有另外一种情况是只剪一刀，即只在j处剪一刀，此时乘积为j*(i-j)
+*取两种情况下较大者
+*/
+    public int cutRope(int target) {
+        int[] dp = new int[target+1];
+        dp[1]=1;
+        dp[2]=1;
+        for(int i=3;i<=target;i++){
+            for(int j=1;j<i;j++){
+                dp[i] = Math.max(dp[i],dp[j]*(i-j));
+                dp[i] = Math.max(dp[i],j*(i-j));
+            }
+        }
+        return dp[target];
+    }
+}
+```
+
+2. [矩阵中的路径](https://www.nowcoder.com/practice/c61c6999eecb4b8f88a98f66b273a3cc?tpId=13&&tqId=11218&rp=1&ru=/ta/coding-interviews&qru=/ta/coding-interviews/question-ranking)
+
+> 请设计一个函数，用来判断在一个矩阵中是否存在一条包含某字符串所有字符的路径。路径可以从矩阵中的任意一个格子开始，每一步可以在矩阵中向左，向右，向上，向下移动一个格子。如果一条路径经过了矩阵中的某一个格子，则该路径不能再进入该格子。 例如
+```
+a b c c
+s f c s
+a d e e
+```
+> 矩阵中包含一条字符串"bcced"的路径，但是矩阵中不包含"abcb"路径，因为字符串的第一个字符b占据了矩阵中的第一行第二个格子之后，路径不能再次进入该格子。
+
+代码(java)
+```java
+public class Solution {
+/**
+*回溯，每次判断一个字符，走过矩阵中这个地方后把它置为0，返回时
+*重新变为原来的字符
+*/
+    
+   int[][] dir = {{0,1},{0,-1},{1,0},{-1,0}};
+    int rows,cols;
+    public boolean dfs(char[] matrix,int x,int y,char[] str,int idx){
+//        System.out.println(x+" "+y);
+        if (idx == str.length)return true;
+        char t = matrix[x*cols+y];
+        matrix[x*cols+y]=0;
+        for (int i=0;i<4;i++) {
+            int nrow = x + dir[i][0], ncol = y + dir[i][1];
+            if (nrow >= 0 && nrow < rows && ncol >= 0 && ncol < cols) {
+                if (matrix[nrow * cols + ncol] != 0 && matrix[nrow * cols + ncol] == str[idx]) {
+                    if (dfs(matrix, nrow, ncol, str, idx + 1)) return true;
+                }
+            }
+        }
+        matrix[x*cols+y]=t;
+        return false;
+    }
+
+    public  boolean hasPath(char[] matrix, int rows, int cols, char[] str)
+    {
+        this.rows = rows;
+        this.cols = cols;
+        for (int i=0;i<rows;i++){
+            for (int j=0;j<cols;j++){
+                if (matrix[i*cols+j]==str[0]){
+                    if (dfs(matrix,i,j,str,1))return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+}
+```
+---
+---
+1. [最佳观光组合](https://leetcode-cn.com/problems/best-sightseeing-pair/)
+
+> 给定正整数数组 A，A[i] 表示第 i 个观光景点的评分，并且两个景点 i 和 j 之间的距离为 j - i。
+一对景点（i < j）组成的观光组合的得分为（A[i] + A[j] + i - j）：景点的评分之和减去它们两者之间的距离。
+返回一对观光景点能取得的最高分。
+
+```
+输入：[8,1,5,2,6]
+输出：11
+解释：i = 0, j = 2, A[i] + A[j] + i - j = 8 + 5 + 0 - 2 = 11
+```
+- 2 <= A.length <= 50000
+- 1 <= A[i] <= 1000
+
+代码(python3)
+```python
+'''
+o(n^2)复杂度会超时，使用动态规划。将原得分公式变化为
+(A[i]+i) + (A[j]-j).
+A[i]+i为左部分最大值，可以记录
+'''
+class Solution:
+    def maxScoreSightseeingPair(self, A: List[int]) -> int:
+        left = A[0]
+        res = -1
+        for i in range(1,len(A)):
+            res = max(res,left+A[i]-i)
+            left = max(left,A[i]+i)
+        return res
+```
+
+2. [冗余连接](https://leetcode-cn.com/problems/redundant-connection/)
+
+> 在本问题中, 树指的是一个连通且无环的无向图。
+输入一个图，该图由一个有着N个节点 (节点值不重复1, 2, ..., N) 的树及一条附加的边构成。附加的边的两个顶点包含在1到N中间，这条附加的边不属于树中已存在的边。
+结果图是一个以边组成的二维数组。每一个边的元素是一对[u, v] ，满足 u < v，表示连接顶点u 和v的无向图的边。
+返回一条可以删去的边，使得结果图是一个有着N个节点的树。如果有多个答案，则返回二维数组中最后出现的边。答案边 [u, v] 应满足相同的格式 u < v。
+
+示例:
+```
+输入: [[1,2], [1,3], [2,3]]
+输出: [2,3]
+解释: 给定的无向图为:
+  1
+ / \
+2 - 3
+
+
+
+输入: [[1,2], [2,3], [3,4], [1,4], [1,5]]
+输出: [1,4]
+解释: 给定的无向图为:
+5 - 1 - 2
+    |   |
+    4 - 3
+```
+- 输入的二维数组大小在 3 到 1000。
+- 二维数组中的整数在1到N之间，其中N是输入数组的大小。
+
+代码(python3）
+```python
+'''
+使用并查集检查每条边的两个顶点是否已经属于同一个父亲，如果是则直接返回这条边，否则将两者并和，继续向下寻找
+'''
+class Solution:
+    def find(self,p,x):
+        while p[x]!=x:
+            x = p[x]
+        return x
+
+    def findRedundantConnection(self, edges: List[List[int]]) -> List[int]:
+        p = [i for i in range(1001)]
+        for lst in edges:
+            n1, n2 = lst[0],lst[1]
+            p1 = self.find(p,n1)
+            p2 = self.find(p,n2)
+            if p1==p2:
+                return lst
+            else:
+                p[p1]=p2
+        return None
+```
+---
+---
 816 [模糊坐标](https://leetcode-cn.com/problems/ambiguous-coordinates/)
 
 > 我们有一些二维坐标，如 "(1, 3)" 或 "(2, 0.5)"，然后我们移除所有逗号，小数点和空格，得到一个字符串S。返回所有可能的原始字符串到一个列表中。
@@ -1156,6 +2072,48 @@ class Solution:
             i+=1
         A[j],A[c]=A[c],A[j]
         return A
+```
+---
+---
+215 [数组中的第K个最大元素](https://leetcode-cn.com/problems/kth-largest-element-in-an-array/)
+
+> 在未排序的数组中找到第 k 个最大的元素。请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。
+
+示例
+```
+输入: [3,2,1,5,6,4] 和 k = 2
+输出: 5
+
+
+输入: [3,2,3,1,2,4,5,5,6] 和 k = 4
+输出: 4
+```
+代码(python3)
+```
+class Solution:
+    def quick_sort(self,nums,l,r,k):
+        pivot = nums[l]
+        left,right = l,r
+        while left<right:
+            while left<right and nums[right]<=pivot:
+                right-=1
+            nums[left] = nums[right]
+            while left<right and nums[left]>=pivot:
+                left+=1
+            nums[right]=nums[left]
+        nums[left]=pivot
+        if left==k-1:
+            return nums[left]
+        elif left>k-1:
+            return self.quick_sort(nums,l,left-1,k)
+        else:
+            return self.quick_sort(nums,left+1,r,k)
+    def findKthLargest(self, nums: List[int], k: int) -> int:
+        '''
+        基于快速排序的思想,分治算法
+        实际上并没有库函数快
+        '''
+        return self.quick_sort(nums,0,len(nums)-1,k)
 ```
 ---
 ---
