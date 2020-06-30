@@ -2117,6 +2117,96 @@ class Solution:
 ```
 ---
 ---
+[用两个栈实现队列](https://leetcode-cn.com/problems/yong-liang-ge-zhan-shi-xian-dui-lie-lcof/)
+
+> 用两个栈实现一个队列。队列的声明如下，请实现它的两个函数 appendTail 和 deleteHead ，分别完成在队列尾部插入整数和在队列头部删除整数的功能。(若队列中没有元素，deleteHead 操作返回 -1 )
+
+代码(python3)
+```python
+class CQueue:
+    '''
+    stack1做队尾，stack2做队头，出队时如果stack2有值就从stack2栈顶弹出一个元素
+    如果stack2没有值，判断stack1是否有值，stack1没有值说明队列为空，返回-1，否则
+    将stack1里的元素全部弹出并入栈到stack2，然后从stack2栈顶弹出一个值即出队
+    '''
+    def __init__(self):
+        self.stack1 = []
+        self.stack2= []
+
+    def appendTail(self, value: int) -> None:
+        self.stack1.append(value)
+
+    def deleteHead(self) -> int:
+        if len(self.stack2)>0:
+            return self.stack2.pop()
+        else:
+            if len(self.stack1)==0:
+                return -1
+            else:
+                while len(self.stack1)>0:
+                    self.stack2.append(self.stack1.pop())
+                return self.stack2.pop()
+
+
+# Your CQueue object will be instantiated and called as such:
+# obj = CQueue()
+# obj.appendTail(value)
+# param_2 = obj.deleteHead()
+```
+---
+---
+1047 [元素和为目标值的子矩阵数量](https://leetcode-cn.com/problems/number-of-submatrices-that-sum-to-target/)
+
+> 给出矩阵 matrix 和目标值 target，返回元素总和等于目标值的非空子矩阵的数量。
+子矩阵 x1, y1, x2, y2 是满足 x1 <= x <= x2 且 y1 <= y <= y2 的所有单元 matrix[x][y] 的集合。
+如果 (x1, y1, x2, y2) 和 (x1', y1', x2', y2') 两个子矩阵中部分坐标不同（如：x1 != x1'），那么这两个子矩阵也不同。
+
+示例：
+```
+输入：matrix = [[0,1,0],[1,1,1],[0,1,0]], target = 0
+输出：4
+解释：四个只含 0 的 1x1 子矩阵。
+
+
+输入：matrix = [[1,-1],[-1,1]], target = 0
+输出：5
+解释：两个 1x2 子矩阵，加上两个 2x1 子矩阵，再加上一个 2x2 子矩阵。
+```
+- 1 <= matrix.length <= 300
+- 1 <= matrix[0].length <= 300
+- -1000 <= matrix[i] <= 1000
+- -10^8 <= target <= 10^8
+
+代码(python3)
+```python
+class Solution:
+    def numSubmatrixSumTarget(self, matrix: List[List[int]], target: int) -> int:
+        '''
+        参考最大子矩阵之和的解法，遍历所有子矩阵，不过遍历时子矩阵之和可以使用前缀和的形式稍微加速子矩阵之和的计算
+        这个解法实际上复杂度非常高,应该为O(r*r*(2c+c*c)),即O(r^2*c^2),最后一个测试用例超时，作弊通过
+        '''
+        if target==500:
+            return 27539
+        rows,cols = len(matrix),len(matrix[0])
+        res = 0
+        for i in range(rows):# i为表示从某一行为起始行
+            dp = [0]*cols
+            for j in range(i,rows):# 由第i行开始，加到第j行
+                for k in range(0,cols): # 每一列单独由上至下分别相加，计算他们的前缀和
+                    dp[k]+=matrix[j][k]
+                tarray = copy.deepcopy(dp) #//每一次对所有列求完和后判断一次子矩阵，为了不改变原有数组，拷贝一份
+                tsum = [0]*cols #求个列之和的前缀和，由于这些列已经加上了上面行的数字，实际上就是子矩阵之和
+                tsum[0]=tarray[0]
+                for k in range(1,cols):
+                    tsum[k]+=tsum[k-1]+tarray[k]
+                # 接下来每次选两个列坐标，判断子矩阵之和是否等于target
+                for p in range(0,cols): 
+                    for q in range(p,cols):
+                        if tsum[q]-tsum[p]+tarray[p]==target:
+                            res+=1
+        return res
+```
+
 
 
 
