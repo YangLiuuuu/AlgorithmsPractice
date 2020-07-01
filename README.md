@@ -2206,6 +2206,52 @@ class Solution:
                             res+=1
         return res
 ```
+---
+---
+718 [最长重复子数组](https://leetcode-cn.com/problems/maximum-length-of-repeated-subarray/)
+
+> 给两个整数数组 A 和 B ，返回两个数组中公共的、长度最长的子数组的长度。
+
+示例 :
+```
+输入:
+A: [1,2,3,2,1]
+B: [3,2,1,4,7]
+输出: 3
+解释: 
+长度最长的公共子数组是 [3, 2, 1]。
+```
+代码(python3)
+```python
+class Solution:
+    def findLength(self, A: List[int], B: List[int]) -> int:
+        n1,n2,res=len(A),len(B),0
+        dp = [[0]*(n2+1) for i in range(n1+1)]
+        for i in range(1,n1+1):
+            for j in range(1,n2+1):
+                dp[i][j] = dp[i-1][j-1]+1 if A[i-1]==B[j-1] else 0
+                res = max(dp[i][j],res)
+        return res
+```
+- 1 <= len(A), len(B) <= 1000
+- 0 <= A[i], B[i] < 100
+---
+---
+[ 红茶？](https://www.nowcoder.com/practice/14a045880df44cf79626f079bd9f07f1?tpId=149&&tqId=33984&rp=1&ru=/ta/exam-bilibili&qru=/ta/exam-bilibili/question-ranking)
+代码(python3)
+```python
+input()
+a = list(map(int,input().split()))
+k = int(input())
+a.sort()
+f,s = True,set(a)
+for n in a:
+    if k-n in s and n<k-n:
+        print(n,k-n)
+        f = False
+if f:
+    print('NO')
+```
 
 
 
