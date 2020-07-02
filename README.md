@@ -2252,6 +2252,74 @@ for n in a:
 if f:
     print('NO')
 ```
+---
+---
+378 [有序矩阵中第K小的元素](https://leetcode-cn.com/problems/kth-smallest-element-in-a-sorted-matrix/)
+
+> 给定一个 n x n 矩阵，其中每行和每列元素均按升序排序，找到矩阵中第 k 小的元素。
+请注意，它是排序后的第 k 小元素，而不是第 k 个不同的元素。 1<=k<=n^2
+
+示例：
+```
+matrix = [
+   [ 1,  5,  9],
+   [10, 11, 13],
+   [12, 13, 15]
+],
+k = 8,
+
+返回 13。
+```
+
+代码(python3)
+```python
+class Solution:
+    def kthSmallest(self, matrix: List[List[int]], k: int) -> int:
+        '''
+        把矩阵每一行视为一个列表，将这些列表归并，归并到第k个元素时退出
+        时间复杂度O(k)，用一个数组记录每一个列表归并的下标，空间复杂度O(n)
+        '''
+        n = len(matrix)
+        idx = [0 for i in range(n)]
+        cnt,res = 0,matrix[0][0]
+        while cnt<k:
+            t = 0
+            minv = 0x7fffffff
+            for i in range(n):
+                if idx[i]<n and matrix[i][idx[i]]<minv:
+                    t = i
+                    minv = matrix[i][idx[i]]
+            res = minv
+            idx[t]+=1
+            cnt+=1
+        return res
+```
+
+1078 [Bigram 分词](https://leetcode-cn.com/problems/occurrences-after-bigram/)
+
+> 给出第一个词 first 和第二个词 second，考虑在某些文本 text 中可能以 "first second third" 形式出现的情况，其中 second 紧随 first 出现，third 紧随 second 出现。
+对于每种这样的情况，将第三个词 "third" 添加到答案中，并返回答案。
+
+示例 ：
+```
+输入：text = "alice is a good girl she is a good student", first = "a", second = "good"
+输出：["girl","student"]
+
+
+输入：text = "we will we will rock you", first = "we", second = "will"
+输出：["we","rock"]
+```
+代码(python3)
+```python
+class Solution:
+    def findOcurrences(self, text: str, first: str, second: str) -> List[str]:
+        words = text.split()
+        res = []
+        for i in range(len(words)-2):
+            if words[i]==first and words[i+1]==second:
+                res.append(words[i+2])
+        return res
+```
 
 
 
