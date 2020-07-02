@@ -2277,7 +2277,7 @@ class Solution:
     def kthSmallest(self, matrix: List[List[int]], k: int) -> int:
         '''
         把矩阵每一行视为一个列表，将这些列表归并，归并到第k个元素时退出
-        时间复杂度O(k)，用一个数组记录每一个列表归并的下标，空间复杂度O(n)
+        时间复杂度O(k*n)，用一个数组记录每一个列表归并的下标，空间复杂度O(n)
         '''
         n = len(matrix)
         idx = [0 for i in range(n)]
@@ -2294,7 +2294,8 @@ class Solution:
             cnt+=1
         return res
 ```
-
+---
+---
 1078 [Bigram 分词](https://leetcode-cn.com/problems/occurrences-after-bigram/)
 
 > 给出第一个词 first 和第二个词 second，考虑在某些文本 text 中可能以 "first second third" 形式出现的情况，其中 second 紧随 first 出现，third 紧随 second 出现。
