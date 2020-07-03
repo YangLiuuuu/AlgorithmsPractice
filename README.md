@@ -2321,6 +2321,119 @@ class Solution:
                 res.append(words[i+2])
         return res
 ```
+---
+---
+108 [将有序数组转换为二叉搜索树](https://leetcode-cn.com/problems/convert-sorted-array-to-binary-search-tree/)
+
+> 将一个按照升序排列的有序数组，转换为一棵高度平衡二叉搜索树。
+本题中，一个高度平衡二叉树是指一个二叉树每个节点 的左右两个子树的高度差的绝对值不超过 1。
+
+示例:
+```
+给定有序数组: [-10,-3,0,5,9],
+
+一个可能的答案是：[0,-3,9,-10,null,5]，它可以表示下面这个高度平衡二叉搜索树：
+
+      0
+     / \
+   -3   9
+   /   /
+ -10  5
+```
+代码(python3)
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def create(self,nums,left,right):
+        if left>right:return None
+        mid = (left+right)//2
+        node = TreeNode(nums[mid])
+        left = self.create(nums,left,mid-1)
+        right = self.create(nums,mid+1,right)
+        node.left=left
+        node.right=right
+        return node
+            
+    def sortedArrayToBST(self, nums: List[int]) -> TreeNode:
+        return self.create(nums,0,len(nums)-1)
+```
+---
+---
+1079 [活字印刷](https://leetcode-cn.com/problems/letter-tile-possibilities/)
+
+> 你有一套活字字模 tiles，其中每个字模上都刻有一个字母 tiles[i]。返回你可以印出的非空字母序列的数目。
+注意：本题中，每个活字字模只能使用一次。
+
+示例
+```
+输入："AAB"
+输出：8
+解释：可能的序列为 "A", "B", "AA", "AB", "BA", "AAB", "ABA", "BAA"。
+
+
+输入："AAABBC"
+输出：188
+```
+
+- 1 <= tiles.length <= 7
+- tiles 由大写英文字母组成
+
+代码(python3)
+```python
+class Solution:
+    def __init__(self):
+        self.res=0
+        self.book = set()
+    def back_track(self,tiles,lenth,curlen,curstr,visited):
+        if lenth==curlen:
+            if curstr not in self.book:
+                self.res+=1
+                self.book.add(curstr)
+            return
+        for i in range(0,len(tiles)):
+            if visited[i]==0:
+                visited[i]=1
+                self.back_track(tiles,lenth,curlen+1,curstr+tiles[i],visited)
+                visited[i]=0
+
+    def numTilePossibilities(self, tiles: str) -> int:
+        '''
+        由于字符串很短，可以深度优先遍历所有结果，并用set去重
+        '''
+        n = len(tiles)
+        visited = [0]*n
+        for i in range(1,n+1):
+            self.back_track(tiles,i,0,'',visited)
+        return self.res
+
+
+
+############################################################
+# 另一种高效的方法是直接记录可用的字母个数，然乎回溯遍历，这样可以免掉去重操作
+class Solution:
+    
+    def numTilePossibilities(self, tiles: str) -> int:
+        book = [0]*26
+        for a in tiles:
+            book[ord(a)-ord('A')]+=1
+        def dfs(book):
+            res = 0
+            for i in range(26):
+                if book[i]==0:
+                    continue
+                res+=1
+                book[i]-=1
+                res+=dfs(book)
+                book[i]+=1
+            return res
+        return dfs(book)
+```
 
 
 
