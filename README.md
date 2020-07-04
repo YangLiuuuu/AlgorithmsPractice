@@ -2434,6 +2434,51 @@ class Solution:
             return res
         return dfs(book)
 ```
+---
+---
+1081 [不同字符的最小子序列](https://leetcode-cn.com/problems/smallest-subsequence-of-distinct-characters/)
+
+> 返回字符串 text 中按字典序排列最小的子序列，该子序列包含 text 中所有不同字符一次。
+
+示例
+```
+输入："cdadabcc"
+输出："adbc"
+
+
+输入："abcd"
+输出："abcd"
+
+输入："ecbacba"
+输出："eacb"
+
+输入："leetcode"
+输出："letcod"
+```
+- 1 <= text.length <= 1000
+- text 由小写英文字母组成
+
+代码(python3)
+```python
+class Solution:
+    def smallestSubsequence(self, text: str) -> str:
+        '''
+        字典序最小一定是按字符升序排列的
+        因此遍历字符串，并将字符串各个字符入栈。
+        如果当前字符在之前已经出现过且已经在栈里。那当前字符就是要舍弃的
+        否则，不停检查栈顶字符，如果栈顶字符比当前字符要大，而且字符串后面还会出现栈顶字符，那么当前栈顶字符肯定可
+        以在后面的遍历中再次遇到，而且添加在当前字符的后面，也就是升序排列，因此将栈顶字符出栈
+        '''
+        n = len(text)
+        stack = []
+        for i in range(len(text)):
+            if text[i] in stack:
+                continue
+            while stack and stack[-1]>text[i] and text.find(stack[-1],i)!=-1:
+                stack.pop()
+            stack.append(text[i])
+        return ''.join(stack)
+```
 
 
 
