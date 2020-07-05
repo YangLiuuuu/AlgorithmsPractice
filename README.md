@@ -2479,6 +2479,125 @@ class Solution:
             stack.append(text[i])
         return ''.join(stack)
 ```
+---
+---
+44 [通配符匹配](https://leetcode-cn.com/problems/wildcard-matching/)
+
+> 给定一个字符串 (s) 和一个字符模式 (p) ，实现一个支持 '?' 和 '*' 的通配符匹配。
+> '?' 可以匹配任何单个字符。
+'*' 可以匹配任意字符串（包括空字符串）。
+两个字符串完全匹配才算匹配成功。
+s 可能为空，且只包含从 a-z 的小写字母。
+p 可能为空，且只包含从 a-z 的小写字母，以及字符 ? 和 *。
+
+示例:
+```
+输入:
+s = "aa"
+p = "a"
+输出: false
+解释: "a" 无法匹配 "aa" 整个字符串。
+
+输入:
+s = "aa"
+p = "*"
+输出: true
+解释: '*' 可以匹配任意字符串。
+
+
+输入:
+s = "cb"
+p = "?a"
+输出: false
+解释: '?' 可以匹配 'c', 但第二个 'a' 无法匹配 'b'。
+
+输入:
+s = "adceb"
+p = "*a*b"
+输出: true
+解释: 第一个 '*' 可以匹配空字符串, 第二个 '*' 可以匹配字符串 "dce".
+```
+
+代码(python3)
+```python
+class Solution:
+    def isMatch(self, s: str, p: str) -> bool:
+        '''
+        dp[i][j]表示s[0:i]和p[0:j]是否匹配
+        先初始化dp方程，空字符串肯定是匹配的，因此dp[0][0]=True,如果模式串第一个字符是*，可以无限向前匹配，直到遇到第一个不是*的字符
+        根据模式串p当前字符确定动态方程当前的值。
+        如果当前字符是*，那它可以为空字符，或者匹配任意字符，只要s[0:i-1],p[0:j-1]匹配，那p[0:j]肯定可以和s[0:i]匹配
+        如果当前字符是？那它可以变为s[i]，即和s[i]相等，所以？和s[i]==p[j]是等效的，只有当s[0:i-1]和p[0:j-1]匹配时，加上这个字符他们才匹配
+        其他情况s[0:i]和p[0:j]不匹配
+        '''
+        len1,len2 = len(s),len(p)
+        dp = [[False]* (len2+1) for i in range(len1+1)]
+        for i in range(1,len2+1):
+            if p[i-1]=='*':dp[0][i]=True
+            else:break
+        dp[0][0] = True
+        for i in range(1,len1+1):
+            for j in range(1,len2+1):
+                if p[j-1]=='*':
+                    dp[i][j] = dp[i-1][j] or dp[i][j-1]
+                elif p[j-1]=='?' or s[i-1]==p[j-1]:
+                    dp[i][j] = dp[i-1][j-1]
+        return dp[len1][len2]
+```
+1091 [二进制矩阵中的最短路径](https://leetcode-cn.com/problems/shortest-path-in-binary-matrix/)
+
+> 在一个 N × N 的方形网格中，每个单元格有两种状态：空（0）或者阻塞（1）。
+一条从左上角到右下角、长度为 k 的畅通路径，由满足下述条件的单元格 C_1, C_2, ..., C_k 组成：
+相邻单元格 C_i 和 C_{i+1} 在八个方向之一上连通（此时，C_i 和 C_{i+1} 不同且共享边或角）
+C_1 位于 (0, 0)（即，值为 grid[0][0]）
+C_k 位于 (N-1, N-1)（即，值为 grid[N-1][N-1]）
+如果 C_i 位于 (r, c)，则 grid[r][c] 为空（即，grid[r][c] == 0）
+返回这条从左上角到右下角的最短畅通路径的长度。如果不存在这样的路径，返回 -1 。
+1 <= grid.length == grid[0].length <= 100
+grid[i][j] 为 0 或 1
+
+示例:
+```
+输入：[[0,0,0],[1,1,0],[1,1,0]]
+输出：4
+```
+![enter description here](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2019/06/16/example2_1.png)
+
+![enter description here](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2019/06/16/example2_2.png)
+代码(python3)
+```python
+class Solution:
+    def shortestPathBinaryMatrix(self, grid: List[List[int]]) -> int:
+        # 标准BFS，注意将走过的格子置为其他值，表示该格子已经走过，如果不这样做会走重复路径，进入死循环
+        dire = [[1,0],[-1,0],[0,1],[0,-1],[-1,-1],[-1,1],[1,1],[1,-1]]
+        from collections import deque
+        rows,cols = len(grid),len(grid[0])
+        q = deque()
+        if grid[0][0]==1 or grid[rows-1][cols-1]==1:
+            return -1
+        q.append(0)
+        grid[0][0]=-1
+        res = 1
+        while q:
+            s = len(q)
+            while s>0:
+                t = q.popleft()
+                r,c = t//cols,t%cols
+                # print(r,c)
+                if r==rows-1 and c==cols-1:return res
+                for i in range(8):
+                    nrow,ncol=r+dire[i][0],c+dire[i][1]
+                    if nrow>=0 and nrow<rows and ncol>=0 and ncol<cols:
+                        if nrow==rows-1 and ncol==cols-1:
+                            return res+1
+                        if grid[nrow][ncol]==0:
+                            q.append(nrow*cols+ncol) 
+                            grid[nrow][ncol] = -1
+                s-=1
+            res+=1
+        return -1
+```
+
 
 
 
