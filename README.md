@@ -2645,6 +2645,91 @@ class Solution:
                     dp[i][j] = dp[i-1][j]+dp[i][j-1]
         return dp[rows-1][cols-1]
 ```
+---
+---
+112[路径总和](https://leetcode-cn.com/problems/path-sum/)
+
+> 给定一个二叉树和一个目标和，判断该树中是否存在根节点到叶子节点的路径，这条路径上所有节点值相加等于目标和。
+> 
+> 说明: 叶子节点是指没有子节点的节点。
+> 
+> 示例:  给定如下二叉树，以及目标和 sum = 22，
+
+```
+              5
+             / \
+            4   8
+           /   / \
+          11  13  4
+         /  \      \
+        7    2      1
+```
+
+> 返回 true, 因为存在目标和为 22 的根节点到叶子节点的路径 5->4->11->2。
+
+代码(python3)
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def hasPathSum(self, root: TreeNode, sum: int) -> bool:
+        if not root:return False
+        if root and not root.left and not root.right:
+            return sum==root.val
+        else:
+            return self.hasPathSum(root.left,sum-root.val) or self.hasPathSum(root.right,sum-root.val)
+```
+---
+---
+1093[大样本统计](https://leetcode-cn.com/problems/statistics-from-a-large-sample/)
+
+> 我们对 0 到 255 之间的整数进行采样，并将结果存储在数组 count 中：count[k] 就是整数 k 的采样个数。
+我们以 浮点数 数组的形式，分别返回样本的最小值、最大值、平均值、中位数和众数。其中，众数是保证唯一的。
+
+示例：
+```
+输入：count = [0,1,3,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+输出：[1.00000,3.00000,2.37500,2.50000,3.00000]
+```
+- count.length == 256
+- 1 <= sum(count) <= 10^9
+- 计数表示的众数是唯一的
+- 答案与真实值误差在 10^-5 以内就会被视为正确答案
+
+```python
+class Solution:
+    def sampleStats(self, count: List[int]) -> List[float]:
+        '''
+        主要是求中位数
+        '''
+        res = [257,0,0,0,0]
+        total,c,f = sum(count),0,0
+        for i in range(256):
+            if count[i]!=0:
+                c+=count[i]
+                res[0] = min(res[0],i)
+                res[1] = max(res[1],i)
+                res[2] += i*count[i]
+                res[4] = i if count[i]>count[res[4]] else res[4]
+            if c>=total/2 and f==0:
+                if (total&1)==1:
+                    res[3] = i
+                elif c-1>=total/2:
+                    res[3] = i
+                else:
+                    j = i+1
+                    while  count[j]==0:j+=1
+                    res[3] = (i+j)/2
+                f=1
+        res[2] = res[2]/total
+        return res
+
+```
 
 
 
