@@ -2767,6 +2767,89 @@ class Solution:
                         dp[i] = min(dp[i],dp[i-len(s)])
         return dp[n]
 ```
+---
+---
+309[最佳买卖股票时机含冷冻期](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/)
+
+> 给定一个整数数组，其中第 i 个元素代表了第 i 天的股票价格 。
+设计一个算法计算出最大利润。在满足以下约束条件下，你可以尽可能地完成更多的交易（多次买卖一支股票）:
+你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
+卖出股票后，你无法在第二天买入股票 (即冷冻期为 1 天)。
+
+示例:
+```
+输入: [1,2,3,0,2]
+输出: 3 
+解释: 对应的交易状态为: [买入, 卖出, 冷冻期, 买入, 卖出]
+```
+代码（python3）
+```python
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        '''
+        状态动态规划，本质上就是一个状态机。三个状态，买入，卖出，冷冻。
+        每一天有三种选择，买入，卖出，不买也不卖，而每种选择都依靠前一天是何种状态
+        画图可以得到三种状态的变化，取变化中最大值就构成动态方程
+        '''
+        n = len(prices)
+        if n<=1:return 0
+        # dp[0][i]表示第i天卖出股票，dp[1][i]表示第i天买入股票，dp[2][i]表示第i天为冷冻期
+        dp = [[0]*n for i in range(3)]
+        dp[1][0] = -prices[0]
+        for i in range(1,n):
+            dp[0][i] = max(dp[0][i-1],dp[1][i-1]+prices[i])
+            dp[1][i] = max(dp[1][i-1],dp[2][i-1]-prices[i])
+            dp[2][i] = dp[0][i-1]
+        return max(dp[0][n-1],dp[2][i-1])
+```
+---
+---
+1094 [拼车](https://leetcode-cn.com/problems/car-pooling/)
+
+> 假设你是一位顺风车司机，车上最初有 capacity 个空座位可以用来载客。由于道路的限制，车 只能 向一个方向行驶（也就是说，不允许掉头或改变方向，你可以将其想象为一个向量）。
+这儿有一份乘客行程计划表 trips[][]，其中 trips[i] = [num_passengers, start_location, end_location] 包含了第 i 组乘客的行程信息：
+- 必须接送的乘客数量；
+- 乘客的上车地点；
+- 以及乘客的下车地点。
+> 这些给出的地点位置是从你的 初始 出发位置向前行驶到这些地点所需的距离（它们一定在你的行驶方向上）。
+> 请你根据给出的行程计划表和车子的座位数，来判断你的车是否可以顺利完成接送所用乘客的任务（当且仅当你可以在所有给定的行程中接送所有乘客时，返回 true，否则请返回
+> false）。
+
+示例:
+```
+输入：trips = [[2,1,5],[3,3,7]], capacity = 4
+输出：false
+
+输入：trips = [[2,1,5],[3,3,7]], capacity = 5
+输出：true	
+
+输入：trips = [[3,2,7],[3,7,9],[8,3,9]], capacity = 11
+输出：true
+```
+- 你可以假设乘客会自觉遵守 “先下后上” 的良好素质
+- trips.length <= 1000
+- trips[i].length == 3
+- 1 <= trips[i][0] <= 100
+- 0 <= trips[i][1] < trips[i][2] <= 1000
+- 1 <= capacity <= 100000
+
+代码(python3)
+```python
+class Solution:
+    def carPooling(self, trips: List[List[int]], capacity: int) -> bool:
+        '''
+        路线最大长度已经固定，为1000。只需记录路线上每一点可能达到的最大人数，然后判断每一点是否超过容量即可
+        '''
+        count = [0]*1001
+        for t in trips:
+            for i in range(t[1],t[2]):
+                count[i]+=t[0]
+        for i in range(1001):
+            if count[i]>capacity:
+                return False
+        return True
+
+```
 
 
 
