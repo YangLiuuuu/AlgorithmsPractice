@@ -2850,6 +2850,80 @@ class Solution:
         return True
 
 ```
+---
+---
+315 [ 计算右侧小于当前元素的个数](https://leetcode-cn.com/problems/count-of-smaller-numbers-after-self/)
+
+> 给定一个整数数组 nums，按要求返回一个新数组 counts。数组 counts 有该性质： counts[i] 的值是  nums[i] 右侧小于 nums[i] 的元素的数量。
+
+```
+输入: [5,2,6,1]
+输出: [2,1,1,0] 
+解释:
+5 的右侧有 2 个更小的元素 (2 和 1).
+2 的右侧仅有 1 个更小的元素 (1).
+6 的右侧有 1 个更小的元素 (1).
+1 的右侧有 0 个更小的元素.
+```
+代码(python3)
+```python
+# 树结点的定义
+class TreeNode:
+    def __init__(self,val):
+        self.left = None
+        self.right = None
+        self.val = val
+        self.leftcnt = 1 # 记录左子树有多少个结点，此处把自身也算入，应该是左子树结点个数加1
+        self.cnt = 1 #记录这个值出现了多少次
+class Solution:
+    def __init__(self):
+        self.root = None
+    def insert(self,val):
+        # 树的插入方法
+        res = 0
+        if not self.root:
+            self.root = TreeNode(val)
+            return res
+        p,t,f = None,self.root,-1
+        node = TreeNode(val)
+        while t:
+            p=t
+            if val>t.val:
+                res+=t.leftcnt
+                t=t.right
+                f=0
+            elif val<t.val:
+                t.leftcnt+=1
+                t=t.left
+                f=1
+            else:
+                f=-1
+                 #如果出现重复的数值，该节点不插入，仅增加一次重复出现的次数，
+                 #而且可以根据leftcnt和cnt计算出小于当前结点的结点个数
+                res+=t.leftcnt-t.cnt
+                t.leftcnt+=1
+                t.cnt+=1
+                break
+        if f==0:
+            p.right=node
+        elif f==1:
+            p.left=node
+        return res    
+    def countSmaller(self, nums: List[int]) -> List[int]:
+        '''
+        二叉搜索树的插入复杂度为O(log n),因此可用二叉搜索树来查找小于当前结点的数值个数
+        从后往前把每个数依次加入二叉搜索树，数结点可以增设一个记录值，记录该节点左孩子有多少个结点
+        这样每次把新节点插入后可以得到小于该结点的数值有多少个。麻烦的地方是重复的数字要如何记录，为了
+        解决重复的数字，再在数结点增设一个值，表示该数值出现了多少次
+        二叉搜索树极端情况下插入复杂度为O(n)，因此算法最差时复杂度会变为o(n^2)，平均情况下复杂度为o(n logn)
+        '''
+        n,root = len(nums),None
+        counts = [0]*n
+        # 必须要从右往左记录
+        for i in reversed(range(n)):
+            counts[i]=self.insert(nums[i])
+        return counts
+```
 
 
 
