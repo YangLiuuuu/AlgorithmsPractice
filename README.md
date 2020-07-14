@@ -2962,7 +2962,7 @@ class Solution:
 ```
 ---
 ---
-350 [两个数组的交集 II](https://leetcode-cn.com/problems/intersection-
+350 [两个数组的交集 II](https://leetcode-cn.com/problems/intersection-of-two-arrays-ii/)
 
 >给定两个数组，编写一个函数来计算它们的交集。
 >输出结果中每个元素出现的次数，应与元素在两个数组中出现的次数一致。
@@ -3047,9 +3047,112 @@ class Solution:
                 dp[i]=min(dp[i],dp[j-1]+h)
                 j-=1
         return dp[-1]
+```
+---
+---
+120 [三角形最小路径和](https://leetcode-cn.com/problems/triangle/)
 
+> 给定一个三角形，找出自顶向下的最小路径和。每一步只能移动到下一行中相邻的结点上。
+相邻的结点 在这里指的是 下标 与 上一层结点下标 相同或者等于 上一层结点下标 + 1 的两个结点。
+例如，给定三角形：
+```
+[
+     [2],
+    [3,4],
+   [6,5,7],
+  [4,1,8,3]
+]
+```
+> 自顶向下的最小路径和为 11（即，2 + 3 + 5 + 1 = 11）。
+
+代码(python3)
+
+``` python
+class Solution:
+    def minimumTotal(self, triangle: List[List[int]]) -> int:
+        '''
+        自底向上原地修改
+        '''
+        n = len(triangle)
+        for i in range(n-2,-1,-1):
+            for j in range(0,i+1):
+                triangle[i][j]+=min(triangle[i+1][j],triangle[i+1][j+1])
+        return triangle[0][0]
+```
+---
+---
+1106 [解析布尔表达式](https://leetcode-cn.com/problems/parsing-a-boolean-expression/)
+
+> 给你一个以字符串形式表述的 布尔表达式（boolean） expression，返回该式的运算结果。
+有效的表达式需遵循以下约定：
+- "t"，运算结果为 True
+- "f"，运算结果为 False
+- "!(expr)"，运算过程为对内部表达式 expr 进行逻辑 非的运算（NOT）
+- "&(expr1,expr2,...)"，运算过程为对 2 个或以上内部表达式 expr1, expr2, ... 进行逻辑 与的运算（AND）
+- "|(expr1,expr2,...)"，运算过程为对 2 个或以上内部表达式 expr1, expr2, ... 进行逻辑 或的运算（OR）
+
+示例
+
+``` 
+输入：expression = "!(f)"
+输出：true
+
+输入：expression = "|(f,t)"
+输出：true
+
+输入：expression = "|(&(t,f,t),!(t))"
+输出：false
+```
+- 1 <= expression.length <= 20000
+- expression[i] 由 {'(', ')', '&', '|', '!', 't', 'f', ','} 中的字符组成。
+- expression 是以上述形式给出的有效表达式，表示一个布尔值。
+
+代码(python3)
+
+``` python
+class Solution:
+    def parseBoolExpr(self, expression: str) -> bool:
+        '''
+        用两个栈，一个记录符号，一个记录值
+        由于每个符号位后必有一个括号，因此以括号为一个符号的运算范围。
+        遍历字符串，遇到符号位入符号位栈，遇到右括号以外的字符全部入值栈
+        如果遇到右括号，表示一个运算符计算，根据符号栈栈顶字符对值栈进行计算并弹出该值，直到遇到值栈为左括号，该运算符结束
+        弹出左括号和该运算符，继续遍历
+        '''
+        sign,val = [],[]
+        for es in expression:
+            if es==',':continue # 跳过逗号
+            if es=='!' or es=='|' or es=='&': # 符号入栈
+                sign.append(es)
+            elif es!=')':
+                if es!='(':
+                    val.append(True if es=='t' else False)
+                else:
+                    val.append('(') #左括号入栈，作为某个符号位计算终止标志
+            else:
+                if sign[-1]=='!':
+                    b = val.pop() # 弹出值
+                    val.pop() # 弹出左括号
+                    val.append(not b) # 取反
+                elif sign[-1]=='&':
+                    r = True
+                    while val and val[-1]!='(':
+                        v = val.pop()
+                        r = r and v
+                    val.pop() # 弹出左括号
+                    val.append(r)
+                else:
+                    r = False
+                    while val and val[-1]!='(':
+                        v = val.pop()
+                        r = r or v
+                    val.pop() # 弹出左括号
+                    val.append(r)
+                sign.pop() # 弹出该符号
+        return val[0]
 
 ```
+
 
 
 
