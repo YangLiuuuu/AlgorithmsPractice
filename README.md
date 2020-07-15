@@ -3150,7 +3150,43 @@ class Solution:
                     val.append(r)
                 sign.pop() # 弹出该符号
         return val[0]
+```
+---
+---
+96 [不同的二叉搜索树](https://leetcode-cn.com/problems/unique-binary-search-trees/)
 
+> 给定一个整数 n，求以 1 ... n 为节点组成的二叉搜索树有多少种？
+
+示例
+```
+输入: 3
+输出: 5
+解释:
+给定 n = 3, 一共有 5 种不同结构的二叉搜索树:
+
+   1         3     3      2      1
+    \       /     /      / \      \
+     3     2     1      1   3      2
+    /     /       \                 \
+   2     1         2                 3
+```
+代码(python3)
+
+``` python
+class Solution:
+    def numTrees(self, n: int) -> int:
+        '''
+        组成二叉树的种数与数值无关，与区间长度有关
+        设dp[i]是由区间长度为i所能组成的二叉搜索树的种数
+        那么可以选取1到i中任意一个数为二叉搜索树的根节点，此时组成二叉搜索树的种类就决定于左右子树的种类
+        设选取j+1为根节点，左子树的种类为dp[j]，右子树区间长度为i-(j+1)，即i-j-1，则dp[i]=dp[j]*dp[i-j-1]，0<=j<i
+        '''
+        dp=[0]*(n+1)
+        dp[0],dp[1]=1,1
+        for i in range(2,n+1):
+            for j in range(0,i):
+                dp[i]+=(dp[j]*dp[i-j-1])
+        return dp[n]
 ```
 
 
