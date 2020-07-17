@@ -3252,7 +3252,54 @@ class Solution:
                 if f==2:f=1
                 else:f=2
         return True
+```
+---
+---
+1110 [删点成林](https://leetcode-cn.com/problems/delete-nodes-and-return-forest/)
 
+> 
+给出二叉树的根节点 root，树上每个节点都有一个不同的值。
+如果节点值在 to_delete 中出现，我们就把该节点从树上删去，最后得到一个森林（一些不相交的树构成的集合）。
+返回森林中的每棵树。你可以按任意顺序组织答案。
+
+示例
+
+``` 
+输入：root = [1,2,3,4,5,6,7], to_delete = [3,5]
+输出：[[1,2,null,4],[6],[7]]
+```
+代码(python3)
+
+``` python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def delNodes(self, root: TreeNode, to_delete: List[int]) -> List[TreeNode]:
+        # 后序遍历
+        res=[]
+        self.dfs(root,None,res,to_delete)
+        if root and root.val not in to_delete:
+            res.append(root)
+        return res
+    def dfs(self,root,parent,res,to_delete):
+        if not root:
+            return
+        self.dfs(root.left,root,res,to_delete)
+        self.dfs(root.right,root,res,to_delete)
+        if root.val in to_delete:
+            if root.left:
+                res.append(root.left)
+            if root.right:
+                res.append(root.right)
+            if parent and parent.left==root:
+                parent.left=None
+            elif parent and parent.right==root:
+                parent.right=None
 
 ```
 
