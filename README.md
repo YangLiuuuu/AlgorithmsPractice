@@ -3385,6 +3385,77 @@ class Solution:
                 t-=1
         return l+leftlist
 ```
+---
+---
+167[两数之和 II - 输入有序数组](https://leetcode-cn.com/problems/two-sum-ii-input-array-is-sorted/)
+
+> 给定一个已按照升序排列 的有序数组，找到两个数使得它们相加之和等于目标数。
+函数应该返回这两个下标值 index1 和 index2，其中 index1 必须小于 index2。
+说明:
+返回的下标值（index1 和 index2）不是从零开始的。
+你可以假设每个输入只对应唯一的答案，而且你不可以重复使用相同的元素。
+
+示例:
+
+``` 
+输入: numbers = [2, 7, 11, 15], target = 9
+输出: [1,2]
+解释: 2 与 7 之和等于目标数 9 。因此 index1 = 1, index2 = 2 。
+```
+代码(python3)
+
+``` python
+class Solution:
+    def twoSum(self, numbers: List[int], target: int) -> List[int]:
+        book = dict()
+        for i in range(len(numbers)):
+            if target-numbers[i] in book:
+                return [book[target-numbers[i]],i+1]
+            book[numbers[i]]=i+1
+        return -1
+```
+---
+---
+1128[等价多米诺骨牌对的数量](https://leetcode-cn.com/problems/number-of-equivalent-domino-pairs/)
+
+> 给你一个由一些多米诺骨牌组成的列表 dominoes。
+如果其中某一张多米诺骨牌可以通过旋转 0 度或 180 度得到另一张多米诺骨牌，我们就认为这两张牌是等价的。
+形式上，dominoes[i] = [a, b] 和 dominoes[j] = [c, d] 等价的前提是a == c 且 b == d，或者a == d且b == c
+在 0 <= i < j < dominoes.length 的前提下，找出满足 dominoes[i] 和 dominoes[j] 等价的骨牌对 (i, j) 的数量。
+
+示例：
+```
+输入：dominoes = [[1,2],[2,1],[3,4],[5,6]]
+输出：1
+```
+- 1 <= dominoes.length <= 40000
+- 1 <= dominoes[i][j] <= 9
+
+```python
+class Solution:
+    def numEquivDominoPairs(self, dominoes: List[List[int]]) -> int:
+        '''
+        将牌变为字符串后用hash表判断
+        '''
+        book=dict()
+        r=0
+        for domino in dominoes:
+            domino.sort()
+            s=str(domino)
+            if s in book:
+                book[s]+=1
+            else:
+                book[s]=1
+        for k,v in book.items():
+            if v>1:
+                r+=v*(v-1)//2
+        return r
+
+```
+
+
+
+
 
 
 
