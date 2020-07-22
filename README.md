@@ -3506,6 +3506,74 @@ class Solution:
                     res.append(node)
         return res
 ```
+---
+---
+1138 [ 字母板上的路径](https://leetcode-cn.com/problems/alphabet-board-path/)
+
+> 我们从一块字母板上的位置 (0, 0) 出发，该坐标对应的字符为 board[0][0]。
+在本题里，字母板为board = ["abcde", "fghij", "klmno", "pqrst", "uvwxy", "z"]，如下所示。
+
+![enter description here](https://assets.leetcode.com/uploads/2019/07/28/azboard.png)
+
+> 我们可以按下面的指令规则行动：
+如果方格存在，'U' 意味着将我们的位置上移一行；
+如果方格存在，'D' 意味着将我们的位置下移一行；
+如果方格存在，'L' 意味着将我们的位置左移一列；
+如果方格存在，'R' 意味着将我们的位置右移一列；
+'!' 会把在我们当前位置 (r, c) 的字符 board[r][c] 添加到答案中。
+（注意，字母板上只存在有字母的位置。）
+返回指令序列，用最小的行动次数让答案和目标 target 相同。你可以返回任何达成目标的路径。
+
+示例
+
+``` 
+输入：target = "leet"
+输出："DDR!UURRR!!DDD!"
+
+输入：target = "code"
+输出："RR!DDRR!UUL!R!"
+```
+代码(python3)
+```python
+class Solution:
+    def alphabetBoardPath(self, target: str) -> str:
+        '''
+        字母坐标可以映射，计算可得出
+        可以想象一个棋子，在棋盘上每次确定一个位置，然后在棋盘上移动棋子，并记录移动轨迹，过程不复杂
+        但特殊的是最后一个字母z，它的右边没有格子了。每次移动时先往上移(如果需要的话)，再往右移。
+        或者先往左移(如果需要)，再往下移
+        '''
+        cols=5
+        cur_row,cur_col=0,0
+        i=0
+        res=''
+        while i<len(target):
+            word=ord(target[i])-ord('a')
+            r,c=word//cols,word%cols
+            if cur_row>r:
+                while cur_row>r:
+                    cur_row-=1
+                    res+='U'
+            if cur_col<c:
+                while cur_col<c:
+                    cur_col+=1
+                    res+='R'
+            if cur_col>c:
+                while cur_col>c:
+                    cur_col-=1
+                    res+='L'
+            if cur_row<r:
+                while cur_row<r:
+                    cur_row+=1
+                    res+='D'
+            res+='!'
+            i+=1
+        return res
+
+
+
+```
+
 
 
 
