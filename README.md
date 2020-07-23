@@ -3569,10 +3569,53 @@ class Solution:
             res+='!'
             i+=1
         return res
-
-
-
 ```
+---
+---
+1144 [递减元素使数组呈锯齿状](https://leetcode-cn.com/problems/decrease-elements-to-make-array-zigzag/)
+
+> 给你一个整数数组 nums，每次 操作 会从中选择一个元素并 将该元素的值减少 1。
+如果符合下列情况之一，则数组 A 就是 锯齿数组：
+每个偶数索引对应的元素都大于相邻的元素，即 A[0] > A[1] < A[2] > A[3] < A[4] > ...
+或者，每个奇数索引对应的元素都大于相邻的元素，即 A[0] < A[1] > A[2] < A[3] > A[4] < ...
+返回将数组 nums 转换为锯齿数组所需的最小操作次数。
+
+示例
+```
+输入：nums = [1,2,3]
+输出：2
+解释：我们可以把 2 递减到 0，或把 3 递减到 1。
+
+输入：nums = [9,6,1,6,2]
+输出：4
+```
+代码(python3)
+```python
+class Solution:
+    def movesToMakeZigzag(self, nums: List[int]) -> int:
+        '''
+        数组只能减少，题目较简单。
+        要么奇数位为波谷，要么偶数位为波谷，取两种方法中变动次数最少的
+        '''
+        c1,c2=0,0
+        for i in range(1,len(nums),2):
+            left=nums[i-1]
+            right=nums[i+1] if i+1<len(nums) else 0x7fffffff
+            t=min(left,right)
+            if nums[i]>=t:
+                c1+=nums[i]-t+1
+
+        for i in range(0,len(nums),2):
+            left=nums[i-1] if i-1>=0 else 0x7fffffff
+            right=nums[i+1] if i+1<len(nums) else 0x7fffffff
+            t=min(left,right)
+            if nums[i]>=t:
+                c2+=nums[i]-t+1
+            
+        return min(c1,c2)
+                
+```
+
 
 
 
