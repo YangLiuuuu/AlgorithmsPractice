@@ -3612,9 +3612,172 @@ class Solution:
             if nums[i]>=t:
                 c2+=nums[i]-t+1
             
-        return min(c1,c2)
-                
+        return min(c1,c2)      
 ```
+---
+---
+329[矩阵中的最长递增路径](https://leetcode-cn.com/problems/longest-increasing-path-in-a-matrix/)
+
+> 给定一个整数矩阵，找出最长递增路径的长度。
+对于每个单元格，你可以往上，下，左，右四个方向移动。 你不能在对角线方向上移动或移动到边界外（即不允许环绕）。
+
+示例:
+```
+输入: nums = 
+[
+  [9,9,4],
+  [6,6,8],
+  [2,1,1]
+] 
+输出: 4 
+解释: 最长递增路径为 [1, 2, 6, 9]。
+
+输入: nums = 
+[
+  [3,4,5],
+  [3,2,6],
+  [2,2,1]
+] 
+输出: 4 
+解释: 最长递增路径是 [3, 4, 5, 6]。注意不允许在对角线方向上移动。
+```
+代码(python3)
+```python
+class Solution:
+    
+    def longestIncreasingPath(self, matrix: List[List[int]]) -> int:
+        '''
+        深度优先加记忆化搜索
+        '''
+        res=1
+        rows=len(matrix)
+        if rows==0:return 0
+        cols=len(matrix[0])
+        book=[[0]*cols for _ in range(rows)]
+        for i in range(rows):
+            for j in range(cols):
+                if book[i][j]==0:
+                    self.dfs(matrix,i,j,-99999999,book)
+                res=max(res,book[i][j])
+        return res
+    def dfs(self,matrix,row,col,last,book):
+        dire=[[0,1],[0,-1],[1,0],[-1,0]]
+        rows,cols=len(matrix),len(matrix[0])
+        if matrix[row][col]<=last:return -1
+        if book[row][col]!=0:return book[row][col]
+        res=1
+        for i in range(4):
+            x,y=row+dire[i][0],col+dire[i][1]
+            if x>=0 and x<rows and y>=0 and y<cols:
+                res=max(self.dfs(matrix,x,y,matrix[row][col],book)+1,res)
+        book[row][col]=res
+        return res
+```
+---
+---
+392[判断子序列](https://leetcode-cn.com/problems/is-subsequence/)
+
+> 给定字符串 s 和 t ，判断 s 是否为 t 的子序列。
+你可以认为 s 和 t 中仅包含英文小写字母。字符串 t 可能会很长（长度 ~= 500,000），而 s 是个短字符串（长度 <=100）。
+字符串的一个子序列是原始字符串删除一些（也可以不删除）字符而不改变剩余字符相对位置形成的新字符串。（例如，"ace"是"abcde"的一个子序列，而"aec"不是）。
+
+示例：
+```
+s = "abc", t = "ahbgdc"
+返回 true.
+
+s = "axc", t = "ahbgdc"
+返回 false.
+```
+代码(python3)
+```python
+class Solution:
+    def isSubsequence(self, s: str, t: str) -> bool:
+        '''
+        双指针
+        '''
+        i,j=0,0
+        while i<len(s) and j<len(t):
+            if s[i]==t[j]:
+                i+=1
+                j+=1
+            else:
+                j+=1
+        return i==len(s)
+```
+---
+---
+1129[颜色交替的最短路径](https://leetcode-cn.com/problems/shortest-path-with-alternating-colors/)
+
+> 在一个有向图中，节点分别标记为 0, 1, ..., n-1。这个图中的每条边不是红色就是蓝色，且存在自环或平行边。
+red_edges 中的每一个 [i, j] 对表示从节点 i 到节点 j 的红色有向边。类似地，blue_edges 中的每一个 [i, j] 对表示从节点 i 到节点 j 的蓝色有向边。
+返回长度为 n 的数组 answer，其中 answer[X] 是从节点 0 到节点 X 的最短路径的长度，且路径上红色边和蓝色边交替出现。如果不存在这样的路径，那么 answer[x] = -1。
+
+示例
+```
+输入：n = 3, red_edges = [[0,1],[1,2]], blue_edges = []
+输出：[0,1,-1]
+
+
+输入：n = 3, red_edges = [[0,1]], blue_edges = [[2,1]]
+输出：[0,1,-1]
+
+
+输入：n = 3, red_edges = [[1,0]], blue_edges = [[2,1]]
+输出：[0,-1,-1]
+
+
+输入：n = 3, red_edges = [[0,1]], blue_edges = [[1,2]]
+输出：[0,1,2]
+```
+代码(python3)
+```python
+class Solution:
+    def shortestAlternatingPaths(self, n: int, red_edges: List[List[int]], blue_edges: List[List[int]]) -> List[int]:
+        '''
+        最短路径问题可使用bfs
+        本题加了路径颜色限制，因此要记录上一条路径的颜色，并以上一条路径的颜色限制下一条路径的颜色
+        可以直接把红色路径到达和蓝色路径到达视为不同结点，这样与普通bfs求最短路径就统一思想了
+        '''
+        inf=999999999999
+        redadj=[[] for _ in range(n)] #红色路径邻接表
+        blueadj=[[] for  _ in range(n)] #蓝色路径邻接表
+        # 下面两个循环建立两种颜色的邻接表
+        for edge in red_edges:
+            redadj[edge[0]].append(edge[1])
+        for edge in blue_edges:
+            blueadj[edge[0]].append(edge[1])
+        answer=[inf]*n #初始化距离为无限远
+        answer[0]=0
+        # from collections import deque
+        q=deque()
+        q.appendleft([0,-1]) #队列元素是一个pair，第一个数记录路径上一个结点的编号，第二个数记录路径颜色，1代表红色，2代表蓝色
+        dis=1
+        redvist,bluevisit=[False]*n,[False]*n #记录是否通过红色路径和蓝色路径访问过该结点
+        while q:
+            size = len(q)
+            for i in range(size):
+                edge=q.pop()
+                if edge[1]!=1: # 如果上一条路径不是红色，就到红色邻接表中继续遍历
+                    for node in redadj[edge[0]]:
+                        if not redvist[node]:
+                            redvist[node]=True
+                            answer[node]=min(answer[node],dis)
+                            q.appendleft([node,1])
+                if edge[1]!=2: # 如果上一条路径不是蓝色，就到蓝色邻接表中继续遍历
+                    for node in blueadj[edge[0]]:
+                        if not bluevisit[node]:
+                            bluevisit[node]=True
+                            answer[node]=min(answer[node],dis)
+                            q.appendleft([node,2])
+            dis+=1 # 往外扩张一层，距离加1
+        for i in range(n):
+            if answer[i]==inf: #该点不可达，修改距离为-1
+                answer[i]=-1
+        return answer
+
+```
+
 
 
 
