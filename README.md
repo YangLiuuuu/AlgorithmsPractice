@@ -4,7 +4,7 @@ tags: 算法
 grammar_cjkRuby: true
 ---
 
-1. [奇偶链表](https://leetcode-cn.com/problems/odd-even-linked-list/)
+328 [奇偶链表](https://leetcode-cn.com/problems/odd-even-linked-list/)
 >给定一个单链表，把所有的奇数节点和偶数节点分别排在一起。请注意，这里的奇数节点和偶数节点指的是节点编号的奇偶性，而不是节点的值的奇偶性。
 请尝试使用原地算法完成。你的算法的空间复杂度应为 O(1)，时间复杂度应为 O(nodes)，nodes 为节点总数。
 
@@ -56,7 +56,7 @@ public:
 ```
 ---
 ---
-2. [重新安排行程](https://leetcode-cn.com/problems/reconstruct-itinerary/)
+332 [重新安排行程](https://leetcode-cn.com/problems/reconstruct-itinerary/)
 
 > 给定一个机票的字符串二维数组 [from, to]，子数组中的两个成员分别表示飞机出发和降落的机场地点，对该行程进行重新规划排序。所有这些机票都属于一个从JFK（肯尼迪国际机场）出发的先生，所以该行程必须从 JFK 出发。
 
@@ -138,7 +138,7 @@ public class Solution {
 ```
 ---
 ---
-3. [前 K 个高频元素](https://leetcode-cn.com/problems/top-k-frequent-elements/)
+347 [前 K 个高频元素](https://leetcode-cn.com/problems/top-k-frequent-elements/)
 
 > 给定一个非空的整数数组，返回其中出现频率前 k 高的元素。
 
@@ -206,7 +206,7 @@ class Solution {
 ---
 ---
 
-1. [三数之和](https://leetcode-cn.com/problems/3sum/)
+15 [三数之和](https://leetcode-cn.com/problems/3sum/)
 > 给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有满足条件且不重复的三元组。
 > 注意：答案中不可以包含重复的三元组。
 
@@ -256,7 +256,7 @@ class Solution:
 ```
 ---
 ---
-2. [字典序排数](https://leetcode-cn.com/problems/lexicographical-numbers/)
+386 [字典序排数](https://leetcode-cn.com/problems/lexicographical-numbers/)
 
 > 给定一个整数 n, 返回从 1 到 n 的字典顺序。
 例如，
@@ -289,7 +289,7 @@ class Solution:
 ```
 ---
 ---
-3. [图书管理员](https://www.luogu.com.cn/problem/P3955)
+ [图书管理员](https://www.luogu.com.cn/problem/P3955)
 
 > 图书馆中每本书都有一个图书编码，可以用于快速检索图书，这个图书编码是一个 正整数。 每位借书的读者手中有一个需求码，这个需求码也是一个正整数。如果一本书的图 书编码恰好以读者的需求码结尾，那么这本书就是这位读者所需要的。 小 D 刚刚当上图书馆的管理员，她知道图书馆里所有书的图书编码，她请你帮她写 一个程序，对于每一位读者，求出他所需要的书中图书编码最小的那本书，如果没有他 需要的书，请输出-1。
 
@@ -363,7 +363,7 @@ for i in res:
 ```
 ---
 ---
-1. 删除二叉树结点
+删除二叉树结点
 
 > 给定一个二叉搜索树的根节点 root 和一个值 key，删除二叉搜索树中的 key 对应的节点，并保证二叉搜索树的性质不变。返回二叉搜索树（有可能被更新）的根节点的引用。
 一般来说，删除节点可分为两个步骤：
@@ -432,7 +432,7 @@ class Solution:
 ```
 ---
 ---
-2. [两个字符串的删除操作](https://leetcode-cn.com/problems/delete-operation-for-two-strings/)
+583 [两个字符串的删除操作](https://leetcode-cn.com/problems/delete-operation-for-two-strings/)
 
 > 给定两个单词 word1 和 word2，找到使得 word1 和 word2 相同所需的最小步数，每步可以删除任意一个字符串中的一个字符。
 
@@ -465,7 +465,7 @@ class Solution:
 
 ---
 ---
-3. [单词替换](https://leetcode-cn.com/problems/replace-words/)
+648 [单词替换](https://leetcode-cn.com/problems/replace-words/)
 
 > 在英语中，我们有一个叫做 词根(root)的概念，它可以跟着其他一些词组成另一个较长的单词——我们称这个词为 继承词(successor)。例如，词根an，跟随着单词 other(其他)，可以形成新的单词 another(另一个)。
 现在，给定一个由许多词根组成的词典和一个句子。你需要将句子中的所有继承词用词根替换掉。如果继承词有许多可以形成它的词根，则用最短的词根替换它。
@@ -505,7 +505,7 @@ class Solution:
 ---
 ---
 
-1. [转变数组后最接近目标值的数组和](https://leetcode-cn.com/problems/sum-of-mutated-array-closest-to-target/)
+1300[转变数组后最接近目标值的数组和](https://leetcode-cn.com/problems/sum-of-mutated-array-closest-to-target/)
 
 > 给你一个整数数组 arr 和一个目标值 target ，请你返回一个整数 value ，使得将数组中所有大于 value 的值变成 value 后，数组的和最接近  target （最接近表示两者之差的绝对值最小）。
 如果有多种使得和最接近 target 的方案，请你返回这些整数中的最小值。
@@ -565,7 +565,7 @@ class Solution:
 ```
 ---
 ---
-2. [二叉搜索树中的众数](https://leetcode-cn.com/problems/find-mode-in-binary-search-tree/)
+501[二叉搜索树中的众数](https://leetcode-cn.com/problems/find-mode-in-binary-search-tree/)
 
 > 给定一个有相同值的二叉搜索树（BST），找出 BST 中的所有众数（出现频率最高的元素）。
 
@@ -624,7 +624,7 @@ class Solution:
             res.append(cur)
         return res
 ```
-3. [出界的路径数](https://leetcode-cn.com/problems/out-of-boundary-paths/)
+576[出界的路径数](https://leetcode-cn.com/problems/out-of-boundary-paths/)
 
 > 给定一个 m × n 的网格和一个球。球的起始坐标为 (i,j) ，你可以将球移到相邻的单元格内，或者往上、下、左、右四个方向上移动使球穿过网格边界。但是，你最多可以移动 N 次。找出可以将球移出边界的路径数量。答案可能非常大，返回 结果 mod 109 + 7 的值。
 
@@ -667,7 +667,7 @@ class Solution:
 ```
 ---
 ---
-1. [最长公共前缀](https://leetcode-cn.com/problems/longest-common-prefix/)
+14 [最长公共前缀](https://leetcode-cn.com/problems/longest-common-prefix/)
 
 > 编写一个函数来查找字符串数组中的最长公共前缀。
 如果不存在公共前缀，返回空字符串 ""。
@@ -700,7 +700,7 @@ class Solution:
 
 ---
 ---
-2. [最大交换](https://leetcode-cn.com/problems/maximum-swap/)
+670 [最大交换](https://leetcode-cn.com/problems/maximum-swap/)
 
 > 给定一个非负整数，你至多可以交换一次数字中的任意两位。返回你能得到的最大值。
 
@@ -745,7 +745,7 @@ class Solution:
 ```
 ---
 ---
-1. [剪绳子](https://www.nowcoder.com/practice/57d85990ba5b440ab888fc72b0751bf8?tpId=13&&tqId=33257&rp=1&ru=/ta/coding-interviews&qru=/ta/coding-interviews/question-ranking)
+ [剪绳子](https://www.nowcoder.com/practice/57d85990ba5b440ab888fc72b0751bf8?tpId=13&&tqId=33257&rp=1&ru=/ta/coding-interviews&qru=/ta/coding-interviews/question-ranking)
 
 > 给你一根长度为n的绳子，请把绳子剪成整数长的m段（m、n都是整数，n>1并且m>1），每段绳子的长度记为k[0],k[1],...,k[m]。请问k[0]xk[1]x...xk[m]可能的最大乘积是多少？例如，当绳子的长度是8时，我们把它剪成长度分别为2、3、3的三段，此时得到的最大乘积是18。
 
@@ -775,7 +775,7 @@ public class Solution {
 }
 ```
 
-2. [矩阵中的路径](https://www.nowcoder.com/practice/c61c6999eecb4b8f88a98f66b273a3cc?tpId=13&&tqId=11218&rp=1&ru=/ta/coding-interviews&qru=/ta/coding-interviews/question-ranking)
+[矩阵中的路径](https://www.nowcoder.com/practice/c61c6999eecb4b8f88a98f66b273a3cc?tpId=13&&tqId=11218&rp=1&ru=/ta/coding-interviews&qru=/ta/coding-interviews/question-ranking)
 
 > 请设计一个函数，用来判断在一个矩阵中是否存在一条包含某字符串所有字符的路径。路径可以从矩阵中的任意一个格子开始，每一步可以在矩阵中向左，向右，向上，向下移动一个格子。如果一条路径经过了矩阵中的某一个格子，则该路径不能再进入该格子。 例如
 ```
@@ -831,7 +831,7 @@ public class Solution {
 ```
 ---
 ---
-1. [最佳观光组合](https://leetcode-cn.com/problems/best-sightseeing-pair/)
+1014[最佳观光组合](https://leetcode-cn.com/problems/best-sightseeing-pair/)
 
 > 给定正整数数组 A，A[i] 表示第 i 个观光景点的评分，并且两个景点 i 和 j 之间的距离为 j - i。
 一对景点（i < j）组成的观光组合的得分为（A[i] + A[j] + i - j）：景点的评分之和减去它们两者之间的距离。
@@ -862,7 +862,7 @@ class Solution:
         return res
 ```
 
-2. [冗余连接](https://leetcode-cn.com/problems/redundant-connection/)
+684 [冗余连接](https://leetcode-cn.com/problems/redundant-connection/)
 
 > 在本问题中, 树指的是一个连通且无环的无向图。
 输入一个图，该图由一个有着N个节点 (节点值不重复1, 2, ..., N) 的树及一条附加的边构成。附加的边的两个顶点包含在1到N中间，这条附加的边不属于树中已存在的边。
@@ -1037,7 +1037,7 @@ print(res)
 ```
 ---
 ---
-[验证回文串](https://leetcode-cn.com/problems/valid-palindrome/)
+125[验证回文串](https://leetcode-cn.com/problems/valid-palindrome/)
 
 > 给定一个字符串，验证它是否是回文串，只考虑字母和数字字符，可以忽略字母的大小写。
 > 
@@ -1163,7 +1163,7 @@ public:
 ```
 ---
 ---
-[三数之和的多种可能](https://leetcode-cn.com/problems/3sum-with-multiplicity/)
+923 [三数之和的多种可能](https://leetcode-cn.com/problems/3sum-with-multiplicity/)
 
 > 给定一个整数数组 A，以及一个整数 target 作为目标值，返回满足 i < j < k 且 A[i] + A[j] + A[k] == target 的元组 i, j, k 的数量。
 由于结果会非常大，请返回 结果除以 10^9 + 7 的余数。
@@ -1235,7 +1235,7 @@ public:
 ```
 ---
 ---
-[爱生气的书店老板](https://leetcode-cn.com/problems/grumpy-bookstore-owner/)
+1052 [爱生气的书店老板](https://leetcode-cn.com/problems/grumpy-bookstore-owner/)
 
 > 今天，书店老板有一家店打算试营业 customers.length 分钟。每分钟都有一些顾客（customers[i]）会进入书店，所有这些顾客都会在那一分钟结束后离开。
 在某些时候，书店老板会生气。 如果书店老板在第 i 分钟生气，那么 grumpy[i] = 1，否则 grumpy[i] = 0。 当书店老板生气时，那一分钟的顾客就会不满意，不生气则他们是满意的。
@@ -1277,7 +1277,7 @@ class Solution:
 ```
 ---
 ---
-[从根到叶的二进制数之和](https://leetcode-cn.com/problems/sum-of-root-to-leaf-binary-numbers/)
+1022 [从根到叶的二进制数之和](https://leetcode-cn.com/problems/sum-of-root-to-leaf-binary-numbers/)
 
 > 给出一棵二叉树，其上每个结点的值都是 0 或 1 。每一条从根到叶的路径都代表一个从最高有效位开始的二进制数。例如，如果路径为 0 -> 1 -> 1 -> 0 -> 1，那么它表示二进制数 01101，也就是 13 。
 对树上的每一片叶子，我们都要找出从根到该叶子的路径所表示的数字。
@@ -1322,7 +1322,7 @@ public:
 ```
 ---
 ---
-[驼峰式匹配](https://leetcode-cn.com/problems/camelcase-matching/)
+1023 [驼峰式匹配](https://leetcode-cn.com/problems/camelcase-matching/)
 
 > 如果我们可以将小写字母插入模式串 pattern 得到待查询项 query，那么待查询项与给定模式串匹配。（我们可以在任何位置插入每个字符，也可以插入 0 个字符。）
 给定待查询列表 queries，和模式串 pattern，返回由布尔值组成的答案列表 answer。只有在待查项 queries[i] 与模式串 pattern 匹配时， answer[i] 才为 true，否则为 false。
@@ -1378,7 +1378,7 @@ class Solution:
 ```
 ---
 ---
-[视频拼接](https://leetcode-cn.com/problems/video-stitching/)
+1024 [视频拼接](https://leetcode-cn.com/problems/video-stitching/)
 
 >你将会获得一系列视频片段，这些片段来自于一项持续时长为 T 秒的体育赛事。这些片段可能有所重叠，也可能长度不一。
 视频片段 clips[i] 都用区间进行表示：开始于 clips[i][0] 并于 clips[i][1] 结束。我们甚至可以对这些片段自由地再剪辑，例如片段 [0, 7] 可以剪切成 [0, 1] + [1, 3] + [3, 7] 三部分。
@@ -1449,7 +1449,7 @@ class Solution:
 ```
 ---
 ---
-[节点与其祖先之间的最大差值](https://leetcode-cn.com/problems/maximum-difference-between-node-and-ancestor/)
+1026 [节点与其祖先之间的最大差值](https://leetcode-cn.com/problems/maximum-difference-between-node-and-ancestor/)
 
 > 给定二叉树的根节点 root，找出存在于不同节点 A 和 B 之间的最大值 V，其中 V = |A.val - B.val|，且 A 是 B 的祖先。
 （如果 A 的任何子节点之一为 B，或者 A 的任何子节点是 B 的祖先，那么我们认为 A 是 B 的祖先）
@@ -1492,7 +1492,7 @@ class Solution:
 ```
 ---
 ---
-[二进制求和](https://leetcode-cn.com/problems/add-binary/)
+67 [二进制求和](https://leetcode-cn.com/problems/add-binary/)
 
 >给你两个二进制字符串，返回它们的和（用二进制表示）。
 输入为 非空 字符串且只包含数字 1 和 0。
@@ -1523,7 +1523,7 @@ class Solution {
 ```
 ---
 ---
-[距离顺序排列矩阵单元格](https://leetcode-cn.com/problems/matrix-cells-in-distance-order/)
+1030 [距离顺序排列矩阵单元格](https://leetcode-cn.com/problems/matrix-cells-in-distance-order/)
 
 >给出 R 行 C 列的矩阵，其中的单元格的整数坐标为 (r, c)，满足 0 <= r < R 且 0 <= c < C。
 另外，我们在该矩阵中给出了一个坐标为 (r0, c0) 的单元格。
@@ -1584,7 +1584,7 @@ class Solution {
 ```
 ---
 ---
-[最接近的三数之和](https://leetcode-cn.com/problems/3sum-closest/)
+16 [最接近的三数之和](https://leetcode-cn.com/problems/3sum-closest/)
 
 > 给定一个包括 n 个整数的数组 nums 和 一个目标值 target。找出 nums 中的三个整数，使得它们的和与 target 最接近。返回这三个数的和。假定每组输入只存在唯一答案。
 
@@ -1629,7 +1629,7 @@ class Solution {
 ```
 ---
 ---
-[两个非重叠子数组的最大和](https://leetcode-cn.com/problems/maximum-sum-of-two-non-overlapping-subarrays/)
+1031 [两个非重叠子数组的最大和](https://leetcode-cn.com/problems/maximum-sum-of-two-non-overlapping-subarrays/)
 
 > 给出非负整数数组 A ，返回两个非重叠（连续）子数组中元素的最大和，子数组的长度分别为 L 和 M。（这里需要澄清的是，长为 L 的子数组可以出现在长为 M 的子数组之前或之后。）
 从形式上看，返回最大的 V，而 V = (A[i] + A[i+1] + ... + A[i+L-1]) + (A[j] + A[j+1] + ... + A[j+M-1]) 并满足下列条件之一：
@@ -1776,7 +1776,7 @@ class Solution {
 ```
 ---
 ---
-1037[有效的回旋镖](https://leetcode-cn.com/problems/valid-boomerang/)
+1037 [有效的回旋镖](https://leetcode-cn.com/problems/valid-boomerang/)
 
 > 回旋镖定义为一组三个点，这些点各不相同且不在一条直线上。
 给出平面上三个点组成的列表，判断这些点是否可以构成回旋镖。
@@ -1847,7 +1847,7 @@ class Solution:
 ```
 ---
 ---
-1041[困于环中的机器人](https://leetcode-cn.com/problems/robot-bounded-in-circle/)
+1041 [困于环中的机器人](https://leetcode-cn.com/problems/robot-bounded-in-circle/)
 
 > 在无限的平面上，机器人最初位于 (0, 0) 处，面朝北方。机器人可以接受下列三条指令之一： "G"：直走 1 个单位, "L"：左转 90
 > 度 ,"R"：右转 90 度
@@ -1904,7 +1904,7 @@ class Solution:
 ```
 ---
 ---
-1042 [不邻接植花](https://leetcode-cn.com/problems/flower-planting-with-no-adjacent/)
+1042  [不邻接植花](https://leetcode-cn.com/problems/flower-planting-with-no-adjacent/)
 
 > 有 N 个花园，按从 1 到 N 标记。在每个花园中，你打算种下四种花之一。
 paths[i] = [x, y] 描述了花园 x 到花园 y 的双向路径。
@@ -2075,7 +2075,7 @@ class Solution:
 ```
 ---
 ---
-215 [数组中的第K个最大元素](https://leetcode-cn.com/problems/kth-largest-element-in-an-array/)
+215  [数组中的第K个最大元素](https://leetcode-cn.com/problems/kth-largest-element-in-an-array/)
 
 > 在未排序的数组中找到第 k 个最大的元素。请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。
 
@@ -2686,7 +2686,7 @@ class Solution:
 ```
 ---
 ---
-1093[大样本统计](https://leetcode-cn.com/problems/statistics-from-a-large-sample/)
+1093 [大样本统计](https://leetcode-cn.com/problems/statistics-from-a-large-sample/)
 
 > 我们对 0 到 255 之间的整数进行采样，并将结果存储在数组 count 中：count[k] 就是整数 k 的采样个数。
 我们以 浮点数 数组的形式，分别返回样本的最小值、最大值、平均值、中位数和众数。其中，众数是保证唯一的。
@@ -2769,7 +2769,7 @@ class Solution:
 ```
 ---
 ---
-309[最佳买卖股票时机含冷冻期](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/)
+309 [最佳买卖股票时机含冷冻期](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/)
 
 > 给定一个整数数组，其中第 i 个元素代表了第 i 天的股票价格 。
 设计一个算法计算出最大利润。在满足以下约束条件下，你可以尽可能地完成更多的交易（多次买卖一支股票）:
