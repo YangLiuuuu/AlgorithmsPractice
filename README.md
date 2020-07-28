@@ -3775,9 +3775,43 @@ class Solution:
             if answer[i]==inf: #该点不可达，修改距离为-1
                 answer[i]=-1
         return answer
+```
+---
+---
+1147  [段式回文](https://leetcode-cn.com/problems/longest-chunked-palindrome-decomposition/)
 
+> 段式回文 其实与 一般回文 类似，只不过是最小的单位是 一段字符 而不是 单个字母。
+举个例子，对于一般回文 "abcba" 是回文，而 "volvo" 不是，但如果我们把 "volvo" 分为 "vo"、"l"、"vo" 三段，则可以认为 “(vo)(l)(vo)” 是段式回文（分为 3 段）。
+给你一个字符串 text，在确保它满足段式回文的前提下，请你返回 段 的 最大数量 k。
+
+示例
+```
+输入：text = "ghiabcdefhelloadamhelloabcdefghi"
+输出：7
+解释：我们可以把字符串拆分成 "(ghi)(abcdef)(hello)(adam)(hello)(abcdef)(ghi)"。
+
+输入：text = "merchant"
+输出：1
+解释：我们可以把字符串拆分成 "(merchant)"。
+
+输入：text = "aaa"
+输出：3
+解释：我们可以把字符串拆分成 "(a)(a)(a)"。
 ```
 
+代码(python3)
+```python
+class Solution:
+    def longestDecomposition(self, text: str) -> int:
+        '''
+        双指针，左右指针互相向对方移动，当形成相同的字符串时分段加2，不能分段就加1
+        '''
+        n=len(text)
+        for i in range(1,n//2+1):
+            if text[0:i]==text[n-i:n]:
+                return self.longestDecomposition(text[i:n-i])+2
+        return min(1,len(text))
+```
 
 
 
