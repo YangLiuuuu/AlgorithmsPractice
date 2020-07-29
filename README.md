@@ -3812,6 +3812,60 @@ class Solution:
                 return self.longestDecomposition(text[i:n-i])+2
         return min(1,len(text))
 ```
+---
+---
+1161[最大层内元素和](https://leetcode-cn.com/problems/maximum-level-sum-of-a-binary-tree/)
+> 给你一个二叉树的根节点 root。设根节点位于二叉树的第 1 层，而根节点的子节点位于第 2 层，依此类推。
+请你找出层内元素之和 最大 的那几层（可能只有一层）的层号，并返回其中 最小 的那个。
+
+示例
+![enter description here](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2019/08/17/capture.jpeg)
+
+``` 
+输入：[1,7,0,7,-8,null,null]
+输出：2
+解释：
+第 1 层各元素之和为 1，
+第 2 层各元素之和为 7 + 0 = 7，
+第 3 层各元素之和为 7 + -8 = -1，
+所以我们返回第 2 层的层号，它的层内元素之和最大。
+```
+
+代码(python3)
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def maxLevelSum(self, root: TreeNode) -> int:
+        '''
+        实际上图的BFS和数的层序遍历是一个思想，这里就是层序遍历，也可以说是BFS
+        '''
+        q=deque()
+        q.append(root)
+        level=1
+        maxsum=-99999999
+        r=1
+        while q:
+            size=len(q)
+            s=0
+            for i in range(size):
+                t=q.pop()
+                s+=t.val
+                if t.left:
+                    q.appendleft(t.left)
+                if t.right:
+                    q.appendleft(t.right)
+            if s>maxsum:
+                maxsum=s
+                r=level
+            level+=1
+        return r
+```
 
 
 
