@@ -3866,6 +3866,56 @@ class Solution:
             level+=1
         return r
 ```
+---
+---
+1169[查询无效交易](https://leetcode-cn.com/problems/invalid-transactions/)
+
+> 如果出现下述两种情况，交易 可能无效：
+- 交易金额超过 ¥1000
+- 或者，它和另一个城市中同名的另一笔交易相隔不超过 60 分钟（包含 60 分钟整）
+> 每个交易字符串 transactions[i] 由一些用逗号分隔的值组成，这些值分别表示交易的名称，时间（以分钟计），金额以及城市。
+> 
+> 给你一份交易清单 transactions，返回可能无效的交易列表。你可以按任何顺序返回答案。
+
+示例:
+```
+输入：transactions = ["alice,20,800,mtv","alice,50,100,beijing"]
+输出：["alice,20,800,mtv","alice,50,100,beijing"]
+解释：第一笔交易是无效的，因为第二笔交易和它间隔不超过 60 分钟、名称相同且发生在不同的城市。同样，第二笔交易也是无效的。
+
+输入：transactions = ["alice,20,800,mtv","alice,50,1200,mtv"]
+输出：["alice,50,1200,mtv"]
+```
+代码
+```python
+class Solution:
+    def invalidTransactions(self, transactions: List[str]) -> List[str]:
+        '''
+        暴力法
+        遍历所有交易，将交易人姓名作为键，把交易人所有交易的编号组成的列表作为值，这样就组成了
+        交易人到其所有交易的映射
+        边遍历边判断交易是否合法
+        时间复杂度o(n^2)
+        '''
+        book = dict()
+        res=set()
+        for i in range(len(transactions)):
+            tra=transactions[i].split(',')
+            if int(tra[2])>1000:
+                res.add(transactions[i])
+            if tra[0] in book:
+                for n in book[tra[0]]:
+                    oldtra=transactions[n].split(',')
+                    if oldtra[3]!=tra[3] and abs(int(oldtra[1])-int(tra[1]))<=60:
+                        res.add(transactions[n])
+                        res.add(transactions[i])
+                book[tra[0]].append(i)
+            else:
+                li = list()
+                li.append(i)
+                book[tra[0]]=li
+        return list(res)
+```
 
 
 
