@@ -4006,6 +4006,55 @@ class Solution:
         return min(c1,c2)
 ```
 
+1185 [一周中的第几天](https://leetcode-cn.com/problems/day-of-the-week/)
+
+> 给你一个日期，请你设计一个算法来判断它是对应一周中的哪一天。
+输入为三个整数：day、month 和 year，分别表示日、月、年。
+您返回的结果必须是这几个值中的一个 {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"}。
+给出的日期一定是在 1971 到 2100 年之间的有效日期。
+
+示例
+```
+输入：day = 31, month = 8, year = 2019
+输出："Saturday"
+```
+代码
+```
+class Solution:
+    def dayOfTheWeek(self, day: int, month: int, year: int) -> str:
+        '''
+        1971年1月1日是星期五，计算与这一天的时间天数，对7取余
+        '''
+        days=[0,31,28,31,30,31,30,31,31,30,31,30,31]
+        c=0
+        for y in range(1971,year):
+            if (y%4==0 and y%100!=0) or y%400==0:
+                c+=366
+            else:
+                c+=365
+        for m in range(month):
+            c+=days[m]
+        c+=day
+        if month>2 and ((year%4==0 and year%100!=0) or year%400==0):
+            c+=1
+        c-=1
+        c%=7
+        if c==0:
+            return "Friday"
+        elif c==1:
+            return "Saturday"
+        elif c==2:
+            return "Sunday"
+        elif c==3:
+            return "Monday" 
+        elif c==4:
+            return "Tuesday"
+        elif c==5:
+            return "Wednesday"
+        else:
+            return "Thursday"
+        
+```
 
 
 
