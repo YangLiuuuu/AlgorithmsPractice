@@ -4005,7 +4005,8 @@ class Solution:
                 c2+=distance[i]
         return min(c1,c2)
 ```
-
+---
+---
 1185 [一周中的第几天](https://leetcode-cn.com/problems/day-of-the-week/)
 
 > 给你一个日期，请你设计一个算法来判断它是对应一周中的哪一天。
@@ -4019,7 +4020,7 @@ class Solution:
 输出："Saturday"
 ```
 代码
-```
+```python
 class Solution:
     def dayOfTheWeek(self, day: int, month: int, year: int) -> str:
         '''
@@ -4053,8 +4054,47 @@ class Solution:
             return "Wednesday"
         else:
             return "Thursday"
-        
 ```
+---
+---
+207 [课程表](https://leetcode-cn.com/problems/course-schedule/)
+
+> 你这个学期必须选修 numCourse 门课程，记为 0 到 numCourse-1 。
+在选修某些课程之前需要一些先修课程。 例如，想要学习课程 0 ，你需要先完成课程 1 ，我们用一个匹配来表示他们：[0,1]
+给定课程总量以及它们的先决条件，请你判断是否可能完成所有课程的学习？
+
+示例
+```
+输入: 2, [[1,0],[0,1]]
+输出: false
+解释: 总共有 2 门课程。学习课程 1 之前，你需要先完成​课程 0；并且学习课程 0 之前，你还应先完成课程 1。这是不可能的。
+```
+代码
+```python
+class Solution:
+    def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
+        # 拓扑排序
+        degrees=[0]*numCourses  # 结点入度记录表
+        graph=[[] for _ in range(numCourses)] # 邻接表
+        for i,j in prerequisites:
+            graph[j].append(i)
+            degrees[i]+=1
+        stack=[]
+        c=0
+        for i in range(numCourses):
+            if degrees[i]==0:
+                stack.append(i)
+        while stack:
+            k=stack.pop()
+            for n in graph[k]:
+                degrees[n]-=1
+                if degrees[n]==0:
+                    stack.append(n)
+            c+=1
+        return c==numCourses
+```
+
+
 
 
 
