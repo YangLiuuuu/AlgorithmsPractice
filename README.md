@@ -4093,6 +4093,82 @@ class Solution:
             c+=1
         return c==numCourses
 ```
+---
+---
+1191 [K 次串联后最大子数组之和](https://leetcode-cn.com/problems/k-concatenation-maximum-sum/)
+
+> 给你一个整数数组 arr 和一个整数 k。
+首先，我们要对该数组进行修改，即把原数组 arr 重复 k 次。
+举个例子，如果 arr = [1, 2] 且 k = 3，那么修改后的数组就是 [1, 2, 1, 2, 1, 2]。
+然后，请你返回修改后的数组中的最大的子数组之和。
+注意，子数组长度可以是 0，在这种情况下它的总和也是 0。
+由于 结果可能会很大，所以需要 模（mod） 10^9 + 7 后再返回。
+
+示例 
+```
+输入：arr = [1,2], k = 3
+输出：9
+
+
+输入：arr = [1,-2,1], k = 5
+输出：2
+
+
+输入：arr = [-1,-2], k = 7
+输出：0
+```
+- 1 <= arr.length <= 10^5
+- 1 <= k <= 10^5
+- -10^4 <= arr[i] <= 10^4
+
+代码(java)
+```java
+class Solution {
+    public int kConcatenationMaxSum(int[] arr, int k) {
+        /**
+        *有多种情况
+        *1. 最大和在arr的中间取得
+        *2. arr的和大于0，最大和为: 最大后缀和+(k-2)*sum(arr)+最大前缀和。k>=2
+        *3. arr的和小于0，最大和为: 最大后缀和+最大前缀和
+        */
+        int len=arr.length;
+        if(len==0){
+            return 0;
+        }
+        long  maxprefix=arr[0],maxsuffix=arr[len-1],t=arr[0],maxmid=arr[0];//最大前缀和，最大后缀和，最大中段和
+        long  mod=(long)(1e9+7);
+        int prefix=arr[0];//当前前缀和
+        int suffix=arr[len-1];//当前后缀和
+        for(int i=1;i<len;i++){
+            prefix+=+arr[i];
+            suffix+=+arr[len-1-i];
+            maxprefix=Math.max(maxprefix,prefix);
+            maxsuffix=Math.max(maxsuffix,suffix);
+			//Kadane 算法
+            if(t+arr[i]<arr[i]){
+                t=arr[i];
+            }else{
+                t+=arr[i];
+            }
+            maxmid=Math.max(t,maxmid);
+        }
+        if(k==1){
+            return (int)Math.max(maxmid%mod,0);//k=1时，直接返回最大中段和，注意如果全部数都小于0，那就一个数都不取，返回0
+        }else{
+            long  res1=(maxsuffix+maxprefix)%mod,res2=maxmid%mod;
+            if(prefix>0){
+                for(int i=0;i<k-2;i++){
+                    res1+=prefix;
+                    res1%=mod;
+                }
+            }
+            int r= (int)Math.max(res2,Math.max(res1,(maxprefix+maxsuffix)%mod));//返回三种情况下最大值
+            return Math.max(r,0);//再与0比较
+        }
+    }
+}
+```
+
 
 
 
