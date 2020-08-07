@@ -4209,6 +4209,75 @@ class Solution {
     }
 }
 ```
+---
+---
+1202 [交换字符串中的元素](https://leetcode-cn.com/problems/smallest-string-with-swaps/)
+
+> 给你一个字符串 s，以及该字符串中的一些「索引对」数组 pairs，其中 pairs[i] = [a, b] 表示字符串中的两个索引（编号从 0 开始）。
+你可以 任意多次交换 在 pairs 中任意一对索引处的字符。
+返回在经过若干次交换后，s 可以变成的按字典序最小的字符串。
+
+示例:
+```
+输入：s = "dcab", pairs = [[0,3],[1,2]]
+输出："bacd"
+解释： 
+交换 s[0] 和 s[3], s = "bcad"
+交换 s[1] 和 s[2], s = "bacd"
+
+输入：s = "dcab", pairs = [[0,3],[1,2],[0,2]]
+输出："abcd"
+解释：
+交换 s[0] 和 s[3], s = "bcad"
+交换 s[0] 和 s[2], s = "acbd"
+交换 s[1] 和 s[2], s = "abcd"
+```
+代码
+```python
+class Solution:
+    def smallestStringWithSwaps(self, s: str, pairs: List[List[int]]) -> str:
+        '''
+        把pairs用并查集连接，这样处于同一簇下标之间的字符可以任意排列，把它们排好序
+        然后按照下标顺序，从前往后插入可以得到结果
+        时间控制很严格，对并查集的路径压缩后才能通过
+        '''
+        n=len(s)
+        # 构建并查集
+        p=[i for i in range(n)]
+        for pair in pairs:
+            p1=self.find(pair[0],p)
+            p2=self.find(pair[1],p)
+            if p1!=p2:
+                p[p1]=p2
+
+        d=dict()
+        rank=[]
+        for i in range(n):
+            t=self.find(i,p)
+            rank.append(t)
+            if t in d:
+                d[t]+=s[i]
+            else:
+                d[t]=s[i]
+        for k,v in d.items():
+            d[k]=sorted(v,reverse=True)
+        res=[]
+        for i in range(n):
+            res.append(d[rank[i]].pop())
+        return ''.join(res)
+
+    def find(self,x,p):
+        son=x
+        while x!=p[x]:
+            x=p[x]
+        while son!=x: # 并查集树的路径压缩
+            t=p[son]
+            p[son]=x
+            son=t
+        return x
+
+```
+
 
 
 
