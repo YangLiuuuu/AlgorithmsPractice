@@ -4319,10 +4319,99 @@ class Solution:
             res=max(i-last+1,res)
             i+=1
         return res
-
 ```
+---
+---
+93 [复原IP地址](https://leetcode-cn.com/problems/restore-ip-addresses/)
 
+> 给定一个只包含数字的字符串，复原它并返回所有可能的 IP 地址格式。
+> 
+> 有效的 IP 地址正好由四个整数（每个整数位于 0 到 255 之间组成），整数之间用 '.' 分隔。
 
+示例
+```
+输入: "25525511135"
+输出: ["255.255.11.135", "255.255.111.35"]
+```
+代码
+```python
+class Solution:
+    def restoreIpAddresses(self, s: str) -> List[str]:
+        '''
+        最适合暴力枚举
+        '''
+        def judge(s):
+            if not s:
+                return False
+            if s[0]!='0':
+                return int(s)<=255
+            return len(s)==1
+        res=[]
+        n=len(s)
+        for i in range(0,min(n,3)):
+            for j in range(i+1,min(n,6)):
+                for k in range(j+1,min(n,9)):
+                    s1=s[0:i+1]
+                    s2=s[i+1:j+1]
+                    s3=s[j+1:k+1]
+                    s4=s[k+1:]
+                    if judge(s1) and judge(s2) and judge(s3) and judge(s4):
+                        res.append(s1+'.'+s2+'.'+s3+'.'+s4)
+        return res
+```
+---
+---
+1219 [黄金矿工](https://leetcode-cn.com/problems/path-with-maximum-gold/)
+
+> 你要开发一座金矿，地质勘测学家已经探明了这座金矿中的资源分布，并用大小为 m * n 的网格 grid 进行了标注。每个单元格中的整数就表示这一单元格中的黄金数量；如果该单元格是空的，那么就是 0。
+为了使收益最大化，矿工需要按以下规则来开采黄金：
+每当矿工进入一个单元，就会收集该单元格中的所有黄金。
+矿工每次可以从当前位置向上下左右四个方向走。
+每个单元格只能被开采（进入）一次。
+不得开采（进入）黄金数目为 0 的单元格。
+矿工可以从网格中 任意一个 有黄金的单元格出发或者是停止。
+
+示例
+
+``` 
+输入：grid = [[0,6,0],[5,8,7],[0,9,0]]
+输出：24
+解释：
+[[0,6,0],
+ [5,8,7],
+ [0,9,0]]
+一种收集最多黄金的路线是：9 -> 8 -> 7。
+```
+代码
+```python
+class Solution:
+    def getMaximumGold(self, grid: List[List[int]]) -> int:
+        '''
+        典型回溯算法
+        '''
+        res=0
+        m,n=len(grid),len(grid[0])
+        visited=[[False]*n for _ in range(m)]
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j]:
+                    res=max(res,self.dfs(i,j,grid,visited))
+        return res
+    
+    def dfs(self,x,y,grid,visited):
+        rows,cols=len(grid),len(grid[0])
+        dire=[[0,1],[0,-1],[1,0],[-1,0]]
+        visited[x][y]=True
+        ans=grid[x][y]
+        t=0
+        for i in range(4):
+            r,c=x+dire[i][0],y+dire[i][1]
+            if r>=0 and r<rows and c>=0 and c<cols:
+                if not visited[r][c] and grid[r][c]!=0:
+                    t=max(t,self.dfs(r,c,grid,visited))
+        visited[x][y]=False
+        return ans+t
+```
 
 
 
