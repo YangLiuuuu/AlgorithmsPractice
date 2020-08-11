@@ -4412,6 +4412,113 @@ class Solution:
         visited[x][y]=False
         return ans+t
 ```
+---
+---
+130  [被围绕的区域](https://leetcode-cn.com/problems/surrounded-regions/)
+
+> 给定一个二维的矩阵，包含 'X' 和 'O'（字母 O）。
+找到所有被 'X' 围绕的区域，并将这些区域里所有的 'O' 用 'X' 填充。
+
+示例
+```
+输入
+X X X X
+X O O X
+X X O X
+X O X X
+
+输出
+X X X X
+X X X X
+X X X X
+X O X X
+```
+代码
+```python
+class Solution:
+    dire=[[0,1],[0,-1],[-1,0],[1,0]]
+    def solve(self, board: List[List[str]]) -> None:
+        """
+        Do not return anything, modify board in-place instead.
+        """
+        '''
+        先从边界入手，以边界O为起点，进行dfs，把与边界相连通的O修改为其他字母，这样剩下的O都是要填充为X的
+        再遍历一遍棋盘，把剩下的O修改为X，并将之前修改成其他字母的位置改为O
+        '''
+        rows=len(board)
+        if rows<=0:
+            return
+        cols=len(board[0])
+        for i in range(rows):
+            if board[i][0]=='O':
+                self.dfs(board,i,0)
+            if board[i][cols-1]=='O':
+                self.dfs(board,i,cols-1)
+        for j in range(cols):
+            if board[0][j]=='O':
+                self.dfs(board,0,j)
+            if board[rows-1][j]=='O':
+                self.dfs(board,rows-1,j)
+        for i in range(0,rows):
+            for j in range(0,cols):
+                if board[i][j]=='O':
+                    board[i][j]='X'
+                if board[i][j]=='A':
+                    board[i][j]='O'
+
+    def dfs(self,board,x,y):
+        board[x][y]='A'
+        rows,cols=len(board),len(board[0])
+        for i in range(4):
+            r,c=self.dire[i][0]+x,self.dire[i][1]+y
+            if r>=0 and r<rows and c>=0 and c<cols:
+                if board[r][c]=='O':
+                    self.dfs(board,r,c)
+```
+---
+---
+1220 [统计元音字母序列的数目](https://leetcode-cn.com/problems/count-vowels-permutation/)
+
+> 给你一个整数 n，请你帮忙统计一下我们可以按下述规则形成多少个长度为 n 的字符串：
+- 字符串中的每个字符都应当是小写元音字母（'a', 'e', 'i', 'o', 'u'）
+- 每个元音 'a' 后面都只能跟着 'e'
+- 每个元音 'e' 后面只能跟着 'a' 或者是 'i'
+- 每个元音 'i' 后面 不能 再跟着另一个 'i'
+- 每个元音 'o' 后面只能跟着 'i' 或者是 'u'
+- 每个元音 'u' 后面只能跟着 'a'
+由于答案可能会很大，所以请你返回 模 10^9 + 7 之后的结果。
+
+示例
+```
+输入：n = 2
+输出：10
+解释：所有可能的字符串分别是："ae", "ea", "ei", "ia", "ie", "io", "iu", "oi", "ou" 和 "ua"。
+
+输入：n = 5
+输出：68
+```
+代码
+```python
+class Solution:
+    def countVowelPermutation(self, n: int) -> int:
+        '''
+        状态动态规划
+        dp[k][n] 0<=k<5 分别表示以aeiou结尾的长度为n的字符串种类数
+        可以根据题意直接得出dp[k][n]和dp[k][n-1]之间的状态变化
+        '''
+        mod=(int)(1e9+7)
+        dp=[[0]*n for _ in range(5)]
+        for i in range(5):
+            dp[i][0]=1
+        for i in range(1,n):
+            dp[0][i]=(dp[1][i-1]+dp[2][i-1]+dp[4][i-1])%mod
+            dp[1][i]=(dp[0][i-1]+dp[2][i-1])%mod
+            dp[2][i]=(dp[1][i-1]+dp[3][i-1])%mod
+            dp[3][i]=dp[2][i-1]
+            dp[4][i]=(dp[2][i-1]+dp[3][i-1])%mod
+        return (dp[0][n-1]+dp[1][n-1]+dp[2][n-1]+dp[3][n-1]+dp[4][n-1])%mod
+```
+
 
 
 
