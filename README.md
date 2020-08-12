@@ -1,9 +1,8 @@
----
-title: 算法练习
-tags: 算法
-grammar_cjkRuby: true
----
 
+按Ctrl + F 搜索题号或者题目名
+---
+---
+---
 328 [奇偶链表](https://leetcode-cn.com/problems/odd-even-linked-list/)
 >给定一个单链表，把所有的奇数节点和偶数节点分别排在一起。请注意，这里的奇数节点和偶数节点指的是节点编号的奇偶性，而不是节点的值的奇偶性。
 请尝试使用原地算法完成。你的算法的空间复杂度应为 O(1)，时间复杂度应为 O(nodes)，nodes 为节点总数。
@@ -4517,6 +4516,48 @@ class Solution:
             dp[3][i]=dp[2][i-1]
             dp[4][i]=(dp[2][i-1]+dp[3][i-1])%mod
         return (dp[0][n-1]+dp[1][n-1]+dp[2][n-1]+dp[3][n-1]+dp[4][n-1])%mod
+```
+---
+---
+1222 [可以攻击国王的皇后](https://leetcode-cn.com/problems/queens-that-can-attack-the-king/)
+
+> 在一个 8x8 的棋盘上，放置着若干「黑皇后」和一个「白国王」。
+「黑皇后」在棋盘上的位置分布用整数坐标数组 queens 表示，「白国王」的坐标用数组 king 表示。
+「黑皇后」的行棋规定是：横、直、斜都可以走，步数不受限制，但是，不能越子行棋。
+请你返回可以直接攻击到「白国王」的所有「黑皇后」的坐标（任意顺序）。
+
+示例 
+![enter description here](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2019/10/13/untitled-diagram.jpg)
+```
+输入：queens = [[0,1],[1,0],[4,0],[0,4],[3,3],[2,4]], king = [0,0]
+输出：[[0,1],[1,0],[3,3]]
+解释： 
+[0,1] 的皇后可以攻击到国王，因为他们在同一行上。 
+[1,0] 的皇后可以攻击到国王，因为他们在同一列上。 
+[3,3] 的皇后可以攻击到国王，因为他们在同一条对角线上。 
+[0,4] 的皇后无法攻击到国王，因为她被位于 [0,1] 的皇后挡住了。 
+[4,0] 的皇后无法攻击到国王，因为她被位于 [1,0] 的皇后挡住了。 
+[2,4] 的皇后无法攻击到国王，因为她和国王不在同一行/列/对角线上。
+```
+代码
+```python
+class Solution:
+    def queensAttacktheKing(self, queens: List[List[int]], king: List[int]) -> List[List[int]]:
+        '''
+        国王只有一个，因此从国王的位置开始朝八个方向去方向搜索皇后会比皇后的位置搜索国王快得多
+        '''
+        res=[]
+        n=8
+        dire=[[-1,0],[-1,1],[0,1],[1,1],[1,0],[1,-1],[0,-1],[-1,-1]]
+        for i in range(8):
+            x,y=king[0],king[1]
+            while x>=0 and x<n and y>=0 and y<n:
+                x+=dire[i][0]
+                y+=dire[i][1]
+                if [x,y] in queens:
+                    res.append([x,y])
+                    break
+        return res
 ```
 
 
