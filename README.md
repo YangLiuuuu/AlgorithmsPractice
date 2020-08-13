@@ -4554,6 +4554,65 @@ class Solution:
                     break
         return res
 ```
+---
+---
+1223 [掷骰子模拟](https://leetcode-cn.com/problems/dice-roll-simulation/)
+
+> 有一个骰子模拟器会每次投掷的时候生成一个 1 到 6 的随机数。
+不过我们在使用它时有个约束，就是使得投掷骰子时，连续 掷出数字 i 的次数不能超过 rollMax[i]（i 从 1 开始编号）。
+现在，给你一个整数数组 rollMax 和一个整数 n，请你来计算掷 n 次骰子可得到的不同点数序列的数量。
+假如两个序列中至少存在一个元素不同，就认为这两个序列是不同的。由于答案可能很大，所以请返回 模 10^9 + 7 之后的结果。
+
+- 1 <= n <= 5000
+- rollMax.length == 6
+- 1 <= rollMax[i] <= 15
+
+示例
+```
+输入：n = 2, rollMax = [1,1,2,2,2,3]
+输出：34
+解释：我们掷 2 次骰子，如果没有约束的话，共有 6 * 6 = 36 种可能的组合。但是根据 rollMax 数组，数字 1 和 2 最多连续出现一次，所以不会出现序列 (1,1) 和 (2,2)。因此，最终答案是 36-2 = 34。
+```
+代码
+```python
+class Solution:
+    def dieSimulator(self, n: int, rollMax: List[int]) -> int:
+        '''
+        dp[i][j][k]表示掷骰子k次，得到以重复j个i结尾的序列的个数，其中 1<=i<=6, 1<=j<=15
+        那么可以得知，dp[i][1][k]表示投掷k次骰子，以1个i结尾的序列个数。由于结尾处只有一个i,除了前一个字符
+        是i的序列外，它前面可以是任意序列。因此dp[i][1][k]=sum(dp[p][q][k-1]) 其中p!=i
+        此外，当j>=2时，dp[i][j][k]表示的序列结尾必须是j个i，那么最后一个字符是i，它前一个字符固定也是i，故
+        此时dp[i][j][k]=dp[i][j-1][k-1]，即只能是投掷了k-1次骰子，且得到了以j-1个i结尾的序列后再投出了一个i
+        
+        为了方便，代码中将所有索引都移到从0开始
+        '''
+        mod=(int)(1e9+7)
+        dp = [[[0]*n for j in range(rollMax[i])] for i in range(6)]
+        for i in range(6): # 只投一次每中数字结尾，且长度为1的序列只有一种
+            dp[i][0][0]=1
+        for k in range(1,n):  # 投掷k次
+            for i in range(6): # 以i结尾
+                # p ，q循环用来单独求dp[i][1][k]
+                for p in range(6):
+                    if p==i:continue
+                    for q in range(rollMax[p]):
+                        dp[i][0][k]+=dp[p][q][k-1]
+                        dp[i][0][k]%=mod
+
+                for j in range(1,rollMax[i]): # 以j个i结尾的序列1种类数
+                    dp[i][j][k]=dp[i][j-1][k-1] # 直接等于投k-1次得到以j-1个i结尾的序列种类数
+        
+        res=0
+        for i in range(6):
+            for j in range(rollMax[i]):
+                res+=dp[i][j][n-1]
+                res%=mod
+        return res
+                    
+        
+        
+```
+
 
 
 
