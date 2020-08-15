@@ -4580,7 +4580,7 @@ class Solution:
         '''
         dp[i][j][k]表示掷骰子k次，得到以重复j个i结尾的序列的个数，其中 1<=i<=6, 1<=j<=15
         那么可以得知，dp[i][1][k]表示投掷k次骰子，以1个i结尾的序列个数。由于结尾处只有一个i,除了前一个字符
-        是i的序列外，它前面可以是任意序列。因此dp[i][1][k]=sum(dp[p][q][k-1]) 其中p!=i
+        是i的序列外，它前面可以是任意序列。因此dp[i][1][k]=sum(dp[p][q][k-1]) 1<=p<=6且p!=i，1<=q<=rollMax[p]
         此外，当j>=2时，dp[i][j][k]表示的序列结尾必须是j个i，那么最后一个字符是i，它前一个字符固定也是i，故
         此时dp[i][j][k]=dp[i][j-1][k-1]，即只能是投掷了k-1次骰子，且得到了以j-1个i结尾的序列后再投出了一个i
         
@@ -4607,11 +4607,83 @@ class Solution:
             for j in range(rollMax[i]):
                 res+=dp[i][j][n-1]
                 res%=mod
-        return res
-                    
-        
-        
+        return res   
 ```
+---
+---
+1232 [缀点成线](https://leetcode-cn.com/problems/check-if-it-is-a-straight-line/)
+
+> 一个 XY 坐标系中有一些点，我们用数组 coordinates 来分别记录它们的坐标，其中 coordinates[i] = [x, y] 表示横坐标为 x、纵坐标为 y 的点。
+请你来判断，这些点是否在该坐标系中属于同一条直线上，是则返回 true，否则请返回 false。
+
+示例
+```
+输入：coordinates = [[1,2],[2,3],[3,4],[4,5],[5,6],[6,7]]
+输出：true
+
+输入：coordinates = [[1,1],[2,2],[3,4],[4,5],[5,6],[7,7]]
+输出：false
+```
+代码
+```python
+class Solution:
+    def checkStraightLine(self, coordinates: List[List[int]]) -> bool:
+        '''
+        取三个点，构成两个向量
+        向量平衡时条件x1/x2=y1/y2，防止除0，变为x1*y2=x2*y1
+        '''
+        n=len(coordinates)
+        for i in range(n-2):
+            u=[coordinates[i][0]-coordinates[i+1][0],coordinates[i][1]-coordinates[i+1][1]]
+            v=[coordinates[i][0]-coordinates[i+2][0],coordinates[i][1]-coordinates[i+2][1]]
+            if v[0]*u[1]!=v[1]*u[0]:
+                return False
+        return True
+```
+---
+---
+1233 [删除子文件夹](https://leetcode-cn.com/problems/remove-sub-folders-from-the-filesystem/)
+
+> 你是一位系统管理员，手里有一份文件夹列表 folder，你的任务是要删除该列表中的所有 子文件夹，并以 任意顺序 返回剩下的文件夹。
+我们这样定义「子文件夹」：
+如果文件夹 folder[i] 位于另一个文件夹 folder[j] 下，那么 folder[i] 就是 folder[j] 的子文件夹。
+文件夹的「路径」是由一个或多个按以下格式串联形成的字符串：
+/ 后跟一个或者多个小写英文字母。
+例如，/leetcode 和 /leetcode/problems 都是有效的路径，而空字符串和 / 不是。
+
+示例
+```
+输入：folder = ["/a","/a/b","/c/d","/c/d/e","/c/f"]
+输出：["/a","/c/d","/c/f"]
+解释："/a/b/" 是 "/a" 的子文件夹，而 "/c/d/e" 是 "/c/d" 的子文件夹。
+
+输入：folder = ["/a","/a/b/c","/a/b/d"]
+输出：["/a"]
+解释：文件夹 "/a/b/c" 和 "/a/b/d/" 都会被删除，因为它们都是 "/a" 的子文件夹。
+```
+代码
+```python
+class Solution:
+    def removeSubfolders(self, folder: List[str]) -> List[str]:
+        '''
+        将所有文件夹加入set
+        遍历所有文件夹，判断文件夹的前缀字符串是否在set中，如果在则该文件夹是某个文件夹的子文件夹
+        '''
+        book=set(folder)
+        res=[]
+        for f in folder:
+            flag=1
+            for i in range(len(f)):
+                if f[i]=='/':
+                    if f[0:i] in book:
+                        flag=0
+                        break
+            if flag:
+                res.append(f)
+        return res
+```
+
+
 
 
 
