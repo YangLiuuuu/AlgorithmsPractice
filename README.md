@@ -4682,6 +4682,80 @@ class Solution:
                 res.append(f)
         return res
 ```
+---
+---
+1234 [替换子串得到平衡字符串](https://leetcode-cn.com/problems/replace-the-substring-for-balanced-string/)
+
+> 有一个只含有 'Q', 'W', 'E', 'R' 四种字符，且长度为 n 的字符串。
+假如在该字符串中，这四个字符都恰好出现 n/4 次，那么它就是一个「平衡字符串」。
+给你一个这样的字符串 s，请通过「替换一个子串」的方式，使原字符串 s 变成一个「平衡字符串」。
+你可以用和「待替换子串」长度相同的 任何 其他字符串来完成替换。
+请返回待替换子串的最小可能长度。
+如果原字符串自身就是一个平衡字符串，则返回 0。
+
+示例
+
+``` 
+输入：s = "QWER"
+输出：0
+解释：s 已经是平衡的了。
+
+
+输入：s = "QQWE"
+输出：1
+解释：我们需要把一个 'Q' 替换成 'R'，这样得到的 "RQWE" (或 "QRWE") 是平衡的。
+
+
+输入：s = "QQQW"
+输出：2
+解释：我们可以把前面的 "QQ" 替换成 "ER"。 
+
+
+输入：s = "QQQQ"
+输出：3
+解释：我们可以替换后 3 个 'Q'，使 s = "QWER"。
+```
+代码
+```python
+class Solution:
+    def balancedString(self, s: str) -> int:
+        '''
+        滑动窗口
+        先计算每个字符出现的次数，要考虑的只有出现次数大于n//4的，可以将这些出现次数大于n//4的变成任意其他不够的字符
+        在窗口内每滑动一次右窗口就检查窗口内字符是否满足条件，如果满足就不断滑动左窗口，将答案数值尽量减少，直到左右边界不满足条件为止
+        '''
+        res=n=len(s)
+        avg=n//4
+        book = dict()
+        # 计算每个字符出现的次数
+        for char in s:
+            if char in book:
+                book[char]+=1
+            else:
+                book[char]=1
+        items=list(book.items())
+        for k,v in items: # 将出现次数少于n//4的字符删除，只考虑出现次数大于n//4的
+            if book[k]<avg:
+                del book[k]
+        if not book: # 如果已经平衡返回0
+            return 0
+        left=right=0
+        while right<n:
+            if s[right] in book: 
+                book[s[right]]-=1 # 可以把s[right]变为其他较少的字符
+            flag=True
+            while flag and left<n:
+                for k,v in book.items(): # 检查是否满足条件
+                    if v>avg:
+                        flag=False
+                        break
+                if flag: # 满足条件就继续缩减左窗口，逼近答案
+                    res=min(res,right-left+1)
+                    if s[left] in book: book[s[left]]+=1
+                    left+=1
+            right+=1
+        return res
+```
 
 
 
