@@ -4809,9 +4809,49 @@ class Solution:
             res.left=self.sortedListToBST(head)
         res.right=self.sortedListToBST(slow.next)
         return res
-        
-        
 ```
+---
+---
+647 [回文子串](https://leetcode-cn.com/problems/palindromic-substrings/)
+
+> 给定一个字符串，你的任务是计算这个字符串中有多少个回文子串。
+> 
+> 具有不同开始位置或结束位置的子串，即使是由相同的字符组成，也会被视作不同的子串。
+
+示例
+```
+输入："abc"
+输出：3
+解释：三个回文子串: "a", "b", "c"
+
+输入："aaa"
+输出：6
+解释：6个回文子串: "a", "a", "a", "aa", "aa", "aaa"
+```
+代码
+```python
+class Solution:
+    def countSubstrings(self, s: str) -> int:
+        '''
+        dp[i][j]==1表示s[i:j]是回文串
+        则dp[i][j]=1 if dp[i+1][j-1]==1 and s[i]==s[j]
+        由于dp[i][j]依赖于dp[i+1][j-1]，i要倒着遍历，j顺着遍历
+        '''
+        n=len(s)
+        dp=[[1]*n for _ in range(n)]
+        for i in range(n-2,-1,-1):
+            for j in range(i+1,n):
+                if s[i]==s[j] and dp[i+1][j-1]==1:dp[i][j]=1
+                else:dp[i][j]=0
+        res=0
+        for i in range(n):
+            for j in range(i,n):
+                res+=dp[i][j]
+        return res
+
+```
+
+ 
 
 
 
