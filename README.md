@@ -5000,11 +5000,74 @@ class Solution:
             return cnt[0]//2+cnt[1]//2+2
         else:
             return -1
-
-            
-        
-        
 ```
+---
+---
+1249 [移除无效的括号](https://leetcode-cn.com/problems/minimum-remove-to-make-valid-parentheses/)
+
+> 给你一个由 '('、')' 和小写字母组成的字符串 s。
+你需要从字符串中删除最少数目的 '(' 或者 ')' （可以删除任意位置的括号)，使得剩下的「括号字符串」有效。
+请返回任意一个合法字符串。
+有效「括号字符串」应当符合以下 任意一条 要求：
+空字符串或只包含小写字母的字符串
+可以被写作 AB（A 连接 B）的字符串，其中 A 和 B 都是有效「括号字符串」
+可以被写作 (A) 的字符串，其中 A 是一个有效的「括号字符串」
+
+示例
+```
+输入：s = "lee(t(c)o)de)"
+输出："lee(t(c)o)de"
+解释："lee(t(co)de)" , "lee(t(c)ode)" 也是一个可行答案。
+
+输入：s = "a)b(c)d"
+输出："ab(c)d"
+
+输入：s = "))(("
+输出：""
+解释：空字符串也是有效的
+```
+代码
+```python
+class Solution:
+    def minRemoveToMakeValid(self, s: str) -> str:
+        '''
+        如果一个字符串是合法字符串，那么从左遍历时左括号数一定大于等于右括号数。遍历时如果碰到右括号数大于左括号数
+        时这个右括号就是要删掉的。还有遍历完时剩下的左括号没有与之匹配的右括号也是要删掉的
+        从右往左遍历时也是同理。
+        三次遍历，一次记录从左往右遍历需要删除的字符下标，一次记录从右往左需要删除的字符下标，一次拼接答案
+        '''
+        stack = []
+        dis = set()
+        n=len(s)
+        for i in range(n):
+            if s[i]=='(':
+                stack.append(i)
+            elif s[i]==')':
+                if not stack:
+                    dis.add(i)
+                else:
+                    stack.pop()
+        for idx in stack:
+            dis.add(idx)
+        stack.clear()
+        for i in range(n-1,-1,-1):
+            if s[i]==')':
+                stack.append(i)
+            elif s[i]=='(':
+                if not stack:
+                    dis.add(i)
+                else:
+                    stack.pop()
+        for idx in stack:
+            dis.add(idx)
+        res=''
+        for i in range(n):
+            if i in dis:continue
+            res+=s[i]
+        return res
+                    
+```
+
 
 
 
