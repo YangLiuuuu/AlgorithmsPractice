@@ -5123,7 +5123,90 @@ class Solution:
             return []
         return res
 ```
+---
+---
+1254 [统计封闭岛屿的数目](leetcode-cn.com/problems/number-of-closed-islands/)
 
+> 有一个二维矩阵 grid ，每个位置要么是陆地（记号为 0 ）要么是水域（记号为 1 ）。
+我们从一块陆地出发，每次可以往上下左右 4 个方向相邻区域走，能走到的所有陆地区域，我们将其称为一座「岛屿」。
+如果一座岛屿 完全 由水域包围，即陆地边缘上下左右所有相邻区域都是水域，那么我们将其称为 「封闭岛屿」。
+请返回封闭岛屿的数目。
+
+示例
+![enter description here](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2019/11/07/sample_3_1610.png)
+```
+输入：grid = [[1,1,1,1,1,1,1,0],[1,0,0,0,0,1,1,0],[1,0,1,0,1,1,1,0],[1,0,0,0,0,1,0,1],[1,1,1,1,1,1,1,0]]
+输出：2
+解释：
+灰色区域的岛屿是封闭岛屿，因为这座岛屿完全被水域包围（即被 1 区域包围）。
+```
+代码
+```python
+class Solution:
+    dire = [[0,1],[0,-1],[1,0],[-1,0]]
+    def closedIsland(self, grid: List[List[int]]) -> int:
+        rows,cols=len(grid),len(grid[0])
+        res=0
+        for i in range(0,rows):
+            for j in range(0,cols):
+                if grid[i][j]==0 and self.dfs(grid,i,j):
+                    res+=1
+        return res
+    def dfs(self,grid,x,y):
+        rows,cols=len(grid),len(grid[0])
+        if x<0 or x>=rows or y<0 or y>=cols:
+            return False
+        if grid[x][y]==1:
+            return True
+        grid[x][y]=1
+        res=True
+        for i in range(4):
+            r,c=x+self.dire[i][0],y+self.dire[i][1]
+            t= self.dfs(grid,r,c)
+            if not t:
+                res=False
+        return res
+```
+---
+---
+491 [ 递增子序列](https://leetcode-cn.com/problems/increasing-subsequences/)
+
+> 给定一个整型数组, 你的任务是找到所有该数组的递增子序列，递增子序列的长度至少是2。
+
+示例
+```
+输入: [4, 6, 7, 7]
+输出: [[4, 6], [4, 7], [4, 6, 7], [4, 6, 7, 7], [6, 7], [6, 7, 7], [7,7], [4,7,7]]
+```
+
+- 给定数组的长度不会超过15。
+- 数组中的整数范围是 [-100,100]。
+- 给定数组中可能包含重复数字，相等的数字应该被视为递增的一种情况。
+
+代码
+```
+class Solution:
+    def findSubsequences(self, nums: List[int]) -> List[List[int]]:
+        '''
+        回溯加set去重
+        回溯时用list保存，变为tuple加入set去重
+        效率较低
+        '''
+        book=set()
+        res=[]
+        self.dfs(nums,0,[],book)
+        for s in book:
+            res.append(list(s))
+        return res
+    def dfs(self,nums,idx,s,book):
+        if len(s)>=2:
+            book.add(tuple(s))
+        for i in range(idx,len(nums)):
+            if len(s)==0 or s[-1]<=nums[i]:
+                s.append(nums[i])
+                self.dfs(nums,i+1,s,book)
+                s.pop()
+```
 
 
 
