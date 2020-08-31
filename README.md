@@ -5290,6 +5290,91 @@ class Solution:
             res.append(t)
         return res
 ```
+---
+---
+841 [钥匙和房间](https://leetcode-cn.com/problems/keys-and-rooms/)
+
+> 有 N 个房间，开始时你位于 0 号房间。每个房间有不同的号码：0，1，2，...，N-1，并且房间里可能有一些钥匙能使你进入下一个房间。
+在形式上，对于每个房间 i 都有一个钥匙列表 rooms[i]，每个钥匙 rooms[i][j] 由 [0,1，...，N-1] 中的一个整数表示，其中 N = rooms.length。 钥匙 rooms[i][j] = v 可以打开编号为 v 的房间。
+最初，除 0 号房间外的其余所有房间都被锁住。
+你可以自由地在房间之间来回走动。
+如果能进入每个房间返回 true，否则返回 false。
+
+示例
+```
+输入: [[1],[2],[3],[]]
+输出: true
+解释:  
+我们从 0 号房间开始，拿到钥匙 1。
+之后我们去 1 号房间，拿到钥匙 2。
+然后我们去 2 号房间，拿到钥匙 3。
+最后我们去了 3 号房间。
+由于我们能够进入每个房间，我们返回 true。
+```
+代码
+```python
+class Solution:
+    def canVisitAllRooms(self, rooms: List[List[int]]) -> bool:
+        book=set()
+        q=deque()
+        q.append(0)
+        book.add(0)
+        while q:
+            n=q.pop()
+            for i in rooms[n]:
+                if i not in book:
+                    book.add(i)
+                    q.appendleft(i)
+        return len(book)==len(rooms)
+```
+---
+---
+1269 [停在原地的方案数](https://leetcode-cn.com/problems/number-of-ways-to-stay-in-the-same-place-after-some-steps/)
+
+> 有一个长度为 arrLen 的数组，开始有一个指针在索引 0 处。
+每一步操作中，你可以将指针向左或向右移动 1 步，或者停在原地（指针不能被移动到数组范围外）。
+给你两个整数 steps 和 arrLen ，请你计算并返回：在恰好执行 steps 次操作以后，指针仍然指向索引 0 处的方案数。
+由于答案可能会很大，请返回方案数 模 10^9 + 7 后的结果。
+- 1 <= steps <= 500
+- 1 <= arrLen <= 10^6
+
+示例
+```
+输入：steps = 3, arrLen = 2
+输出：4
+解释：3 步后，总共有 4 种不同的方法可以停在索引 0 处。
+向右，向左，不动
+不动，向右，向左
+向右，不动，向左
+不动，不动，不动
+
+输入：steps = 2, arrLen = 4
+输出：2
+解释：2 步后，总共有 2 种不同的方法可以停在索引 0 处。
+向右，向左
+不动，不动
+```
+代码
+```python
+class Solution:
+    def numWays(self, steps: int, arrLen: int) -> int:
+        '''
+        dp[i][j]表示经过i步到达坐标j的方案数，dp[0][0]=1
+        每一步可以向左、向右或者不动，那么dp[i][j]=dp[i-1][j-1]+dp[i-1][j+1]+dp[i-1][j]
+        '''
+        dp = [[0]*min(arrLen,steps+1) for _ in range(steps+1)]
+        dp[0][0]=1
+        mod=1000000007
+        for i in range(1,steps+1):
+            for j in range(min(arrLen,steps+1)):
+                if j-1>=0:
+                    dp[i][j]=(dp[i][j]+dp[i-1][j-1])%mod
+                if j+1<min(arrLen,steps+1):
+                    dp[i][j]=(dp[i][j]+dp[i-1][j+1])%mod
+                dp[i][j]=(dp[i][j]+dp[i-1][j])%mod
+        return dp[steps][0]
+```
+
 
 
 
