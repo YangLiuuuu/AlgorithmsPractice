@@ -5374,6 +5374,83 @@ class Solution:
                 dp[i][j]=(dp[i][j]+dp[i-1][j])%mod
         return dp[steps][0]
 ```
+---
+---
+1276 [不浪费原料的汉堡制作方案](https://leetcode-cn.com/problems/number-of-burgers-with-no-waste-of-ingredients/)
+
+> 圣诞活动预热开始啦，汉堡店推出了全新的汉堡套餐。为了避免浪费原料，请你帮他们制定合适的制作计划。
+给你两个整数 tomatoSlices 和 cheeseSlices，分别表示番茄片和奶酪片的数目。不同汉堡的原料搭配如下：
+巨无霸汉堡：4 片番茄和 1 片奶酪
+小皇堡：2 片番茄和 1 片奶酪
+请你以 [total_jumbo, total_small]（[巨无霸汉堡总数，小皇堡总数]）的格式返回恰当的制作方案，使得剩下的番茄片 tomatoSlices 和奶酪片 cheeseSlices 的数量都是 0。
+如果无法使剩下的番茄片 tomatoSlices 和奶酪片 cheeseSlices 的数量为 0，就请返回 []。
+
+示例
+```
+输入：tomatoSlices = 16, cheeseSlices = 7
+输出：[1,6]
+解释：制作 1 个巨无霸汉堡和 6 个小皇堡需要 4*1 + 2*6 = 16 片番茄和 1 + 6 = 7 片奶酪。不会剩下原料。
+
+输入：tomatoSlices = 17, cheeseSlices = 4
+输出：[]
+解释：只制作小皇堡和巨无霸汉堡无法用光全部原料。
+```
+代码
+```python
+class Solution:
+    def numOfBurgers(self, tomatoSlices: int, cheeseSlices: int) -> List[int]:
+        '''
+        设tomatoSlices和cheeseSlices分别为t和c
+        制作巨无霸和小黄堡数量分别为x，y
+        则有4*x+2*x=t,x+y=c,求二元一次方程的正整数解
+        '''
+        t=tomatoSlices
+        c=cheeseSlices
+        if not (4*c-t)&1 and 4*c-t>=0 and 2*t-4*c>=0:
+            return [(2*t-4*c)//4,(4*c-t)//2]
+        else:
+            return []
+```
+---
+---
+1282 [用户分组](https://leetcode-cn.com/problems/group-the-people-given-the-group-size-they-belong-to/)
+
+> 有 n 位用户参加活动，他们的 ID 从 0 到 n - 1，每位用户都 恰好 属于某一用户组。给你一个长度为 n 的数组 groupSizes，其中包含每位用户所处的用户组的大小，请你返回用户分组情况（存在的用户组以及每个组中用户的 ID）。
+你可以任何顺序返回解决方案，ID 的顺序也不受限制。此外，题目给出的数据保证至少存在一种解决方案。
+
+示例
+```
+输入：groupSizes = [3,3,3,3,3,1,3]
+输出：[[5],[0,1,2],[3,4,6]]
+解释： 
+其他可能的解决方案有 [[2,1,6],[5],[0,4,3]] 和 [[5],[0,6,2],[4,3,1]]。
+
+输入：groupSizes = [2,1,3,3,3,2]
+输出：[[1],[0,5],[2,3,4]]
+```
+代码
+```python
+class Solution:
+    def groupThePeople(self, groupSizes: List[int]) -> List[List[int]]:
+        '''
+        hash表记录组大小的列表，边遍历边插入。因为题目保证有至少一种解决方案，不用担心键和值里的列表长度不匹配情况出现
+        '''
+        book = dict()
+        for i,s in enumerate(groupSizes):
+            if s in book:
+                if len(book[s][-1])<s:
+                    book[s][-1].append(i)
+                else:
+                    book[s].append([i])
+            else:
+                book[s]=[]
+                book[s].append([i])
+        res=[]
+        for k,v in book.items():
+            for lst in v:
+                res.append(lst)
+        return res
+```
 
 
 
