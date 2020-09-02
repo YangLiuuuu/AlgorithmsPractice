@@ -5451,6 +5451,90 @@ class Solution:
                 res.append(lst)
         return res
 ```
+---
+---
+1283 [使结果不超过阈值的最小除数](https://leetcode-cn.com/problems/find-the-smallest-divisor-given-a-threshold/)
+
+> 给你一个整数数组 nums 和一个正整数 threshold  ，你需要选择一个正整数作为除数，然后将数组里每个数都除以它，并对除法结果求和。
+请你找出能够使上述结果小于等于阈值 threshold 的除数中 最小 的那个。
+每个数除以除数后都向上取整，比方说 7/3 = 3 ， 10/2 = 5 。
+题目保证一定有解。
+
+示例
+```
+输入：nums = [1,2,5,9], threshold = 6
+输出：5
+解释：如果除数为 1 ，我们可以得到和为 17 （1+2+5+9）。
+如果除数为 4 ，我们可以得到和为 7 (1+1+2+3) 。如果除数为 5 ，和为 5 (1+1+1+2)。
+
+输入：nums = [2,3,5,7,11], threshold = 11
+输出：3
+```
+代码
+```python
+class Solution:
+    def smallestDivisor(self, nums: List[int], threshold: int) -> int:
+        '''
+        可以将暴力法用二分优化
+        '''
+        l=1
+        r=max(nums)
+        mid=(l+r)//2
+        while l<r:
+            mid = (l+r)//2
+            c=0
+            for n in nums:
+                c+=ceil(n/mid)
+            if c<=threshold:
+                r=mid
+            else:
+                l=mid+1
+        return l
+```
+---
+---
+1288 [删除被覆盖区间](https://leetcode-cn.com/problems/remove-covered-intervals/)
+
+> 给你一个区间列表，请你删除列表中被其他区间所覆盖的区间。
+只有当 c <= a 且 b <= d 时，我们才认为区间 [a,b]被区间[c,d]覆盖。请完成所有删除操作后列表中剩余区间的数目
+
+示例
+```
+输入：intervals = [[1,4],[3,6],[2,8]]
+输出：2
+解释：区间 [3,6] 被区间 [2,8] 覆盖，所以它被删除了。
+```
+
+代码
+```python
+class Solution:
+    def removeCoveredIntervals(self, intervals: List[List[int]]) -> int:
+        '''
+        把区间排序后只需要一直检查右边界即可，把右边界被前面区间覆盖的区间减去
+        '''
+        itvs=sorted(intervals,key=functools.cmp_to_key(comp))
+        i=j=0
+        res=0
+        # print(itvs)
+        while j<len(itvs):
+            j=i+1
+            while j<len(itvs) and itvs[j][1]<=itvs[i][1]:
+                j+=1
+            res+=1
+            i=j
+        return res
+
+def comp(itv1,itv2):
+    if itv1[0]>itv2[0]:
+        return 1
+    elif itv1[0]<itv2[0]:
+        return -1
+    elif itv1[1]<itv2[1]:
+        return 1
+    else:
+        return -1
+```
+
 
 
 
