@@ -5534,6 +5534,112 @@ def comp(itv1,itv2):
     else:
         return -1
 ```
+---
+---
+1291 [顺次数](https://leetcode-cn.com/problems/sequential-digits/)
+
+> 我们定义「顺次数」为：每一位上的数字都比前一位上的数字大 1 的整数。
+请你返回由 [low, high] 范围内所有顺次数组成的 有序 列表（从小到大排序）。
+
+示例 
+```
+输出：low = 100, high = 300
+输出：[123,234]
+
+输出：low = 1000, high = 13000
+输出：[1234,2345,3456,4567,5678,6789,12345]
+```
+代码
+```python
+class Solution:
+    def sequentialDigits(self, low: int, high: int) -> List[int]:
+        '''
+        构造数字表
+        先获取数字长度，根据数字长度得到范围内的第一个顺次数
+        接下来只需要固定窗口大小滑动窗口获取所有数字即可，每次右窗口滑动到最右边时将左窗口重新放到最左端，将窗口
+        大小增大一个单位继续以上操作。
+        '''
+        n=len(str(low))
+        tb=[1,2,3,4,5,6,7,8,9]
+        i=0
+        t=self.get(tb,i,n)
+        while t<low and i<9:
+            i+=1
+            t=self.get(tb,i,n)
+        if i==9:
+            i=0
+            n+=1
+        res=[]
+        while i+n<10:
+            t=self.get(tb,i,n)
+            if low<=t<=high:
+                res.append(t)
+            else:
+                break
+            i+=1
+            if i+n==10:
+                i=0
+                n+=1
+        return res
+    def get(self,tb,idx,n):
+        c=0
+        for i in range(idx,min(idx+n,9)):
+            c=c*10+tb[i]
+        return c
+```
+---
+---
+1292 [元素和小于等于阈值的正方形的最大边长](https://leetcode-cn.com/problems/maximum-side-length-of-a-square-with-sum-less-than-or-equal-to-threshold/)
+
+> 给你一个大小为 m x n 的矩阵 mat 和一个整数阈值 threshold。
+请你返回元素总和小于或等于阈值的正方形区域的最大边长；如果没有这样的正方形区域，则返回 0 。
+
+示例
+![enter description here](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2019/12/15/e1.png)
+```
+输入：mat = [[1,1,3,2,4,3,2],[1,1,3,2,4,3,2],[1,1,3,2,4,3,2]], threshold = 4
+输出：2
+解释：总和小于 4 的正方形的最大边长为 2，如图所示。
+
+
+输入：mat = [[2,2,2,2,2],[2,2,2,2,2],[2,2,2,2,2],[2,2,2,2,2],[2,2,2,2,2]], threshold = 1
+输出：0
+```
+代码
+```python
+class Solution:
+    def maxSideLength(self, mat: List[List[int]], threshold: int) -> int:
+        '''
+		前缀和加暴力法
+        计算矩阵的前缀和矩阵，s[i+1][j+1]表示以i,j为右下角、0,0为左上角的子矩阵所有元素之和
+        这样计算以i，j为左上角，边长为k的正方形矩阵元素之和的公式为s[i+k][j+k]-s[i+k][j]-s[i][j+k]+s[i][j]
+        
+        '''
+        m,n=len(mat),len(mat[0])
+        s=[[0]*(n+1) for _ in range(m+1)]
+        f=True
+        for i in range(m):
+            for j in range(n):
+                if mat[i][j]<=threshold:
+                    f=False
+                s[i+1][j+1]=s[i+1][j]+mat[i][j]
+        for j in range(1,n+1):
+            for i in range(1,m+1):
+                s[i][j]+=s[i-1][j]
+        res=0
+        if f:return 0
+
+        for i in range(0,m+1):
+            for j in range(0,n+1):
+                k=1
+                while i+k<=m and j+k<=n:
+                    if s[i+k][j+k]-s[i+k][j]-s[i][j+k]+s[i][j]<=threshold:
+                        res=max(res,k)
+                    else:
+                        break
+                    k+=1
+        return res
+```
 
 
 
