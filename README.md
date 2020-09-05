@@ -5684,6 +5684,48 @@ class Solution:
                     t+=1
         return True
 ```
+---
+---
+1297  [子串的最大出现次数](https://leetcode-cn.com/problems/maximum-number-of-occurrences-of-a-substring/)
+
+> 给你一个字符串 s ，请你返回满足以下条件且出现次数最大的 任意 子串的出现次数：
+- 子串中不同字母的数目必须小于等于 maxLetters 。
+- 子串的长度必须大于等于 minSize 且小于等于 maxSize 。
+
+示例 
+```
+输入：s = "aababcaab", maxLetters = 2, minSize = 3, maxSize = 4
+输出：2
+解释：子串 "aab" 在原字符串中出现了 2 次。
+它满足所有的要求：2 个不同的字母，长度为 3 （在 minSize 和 maxSize 范围内）。
+
+输入：s = "aaaa", maxLetters = 1, minSize = 3, maxSize = 3
+输出：2
+解释：子串 "aaa" 在原字符串中出现了 2 次，且它们有重叠部分。
+
+输入：s = "abcde", maxLetters = 2, minSize = 3, maxSize = 3
+输出：0
+```
+代码
+```python
+class Solution:
+    def maxFreq(self, s: str, maxLetters: int, minSize: int, maxSize: int) -> int:
+        '''
+        较长的字符串会覆盖较短的字符串，只需统计最短的子字符串出现的次数
+        '''
+        book=dict()
+        res=0
+        for i in range(0,len(s)-minSize+1):
+            if len(set(s[i:i+minSize]))<=maxLetters:  # 首先它的字母出现个数要满足条件
+                sub=s[i:i+minSize]
+                # print(sub)
+                if sub in book:
+                    book[sub]+=1
+                else:
+                    book[sub]=1
+                res=max(book[sub],res)
+        return res
+```
 
 
 
