@@ -5726,6 +5726,44 @@ class Solution:
                 res=max(book[sub],res)
         return res
 ```
+---
+---
+1302 [层数最深叶子节点的和](https://leetcode-cn.com/problems/deepest-leaves-sum/)
+
+> 给你一棵二叉树，请你返回层数最深的叶子节点的和。
+
+示例
+```
+输入：root = [1,2,3,4,5,null,6,7,null,null,null,null,8]
+输出：15
+```
+代码
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def deepestLeavesSum(self, root: TreeNode) -> int:
+        level=[]
+        q=deque()
+        q.append(root)
+        s=0
+        while len(q)>0:
+            size=len(q)
+            s=0
+            for i in range(size):
+                t=q.pop()
+                s+=t.val
+                if t.left:
+                    q.appendleft(t.left)
+                if t.right:
+                    q.appendleft(t.right)
+        return s
+```
 
 
 
