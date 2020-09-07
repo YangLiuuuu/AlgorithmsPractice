@@ -5764,6 +5764,52 @@ class Solution:
                     q.appendleft(t.right)
         return s
 ```
+---
+---
+1310[异或查询](https://leetcode-cn.com/problems/xor-queries-of-a-subarray/)
+
+> 有一个正整数数组 arr，现给你一个对应的查询数组 queries，其中 queries[i] = [Li, Ri]。
+对于每个查询 i，请你计算从 Li 到 Ri 的 XOR 值（即 arr[Li] xor arr[Li+1] xor ... xor arr[Ri]）作为本次查询的结果。
+并返回一个包含给定查询 queries 所有结果的数组。
+
+示例
+```
+输入：arr = [1,3,4,8], queries = [[0,1],[1,2],[0,3],[3,3]]
+输出：[2,7,14,8] 
+解释：
+数组中元素的二进制表示形式是：
+1 = 0001 
+3 = 0011 
+4 = 0100 
+8 = 1000 
+查询的 XOR 值为：
+[0,1] = 1 xor 3 = 2 
+[1,2] = 3 xor 4 = 7 
+[0,3] = 1 xor 3 xor 4 xor 8 = 14 
+[3,3] = 8
+```
+代码
+```python
+class Solution:
+    def xorQueries(self, arr: List[int], queries: List[List[int]]) -> List[int]:
+        '''
+        数据量很大，暴力法会超时
+        首先要清楚异或的性质：a^a=0,a^b=b^a,a^0=a
+        可以先求数组的前缀异或和数组book，设l，r为要求得子数组异或值的左右边界
+        那么book[l]=arr[0]^arr[1]...^arr[l-1],book[r+1]=arr[0]^arr[1]^...arr[l-1]^arr[l]^arr[l+1]...^arr[r]
+        即book[r+1]=book[l]^arr[l]^arr[l+1]...^arr[r]，arr[l]^arr[l+1]...^arr[r]即为所求结果res
+        那么book[r+1]^book[l]=book[l]^res^book[l]=res
+        '''
+        n=len(arr)
+        book=[0]*(n+1)
+        for i in range(1,n+1):
+            book[i]=book[i-1]^arr[i-1]
+        res=[]
+        for l,r in queries:
+            res.append(book[l]^book[r+1])
+        return res
+```
+
 
 
 
