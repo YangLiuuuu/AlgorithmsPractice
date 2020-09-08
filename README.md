@@ -5809,6 +5809,112 @@ class Solution:
             res.append(book[l]^book[r+1])
         return res
 ```
+---
+---
+77 [组合](https://leetcode-cn.com/problems/combinations/)
+
+> 给定两个整数 n 和 k，返回 1 ... n 中所有可能的 k 个数的组合。
+
+示例
+```
+输入: n = 4, k = 2
+输出:
+[
+  [2,4],
+  [3,4],
+  [2,3],
+  [1,2],
+  [1,3],
+  [1,4],
+]
+```
+代码
+```python
+class Solution:
+    def __init__(self):
+        self.res=[]
+        self.path=[]
+    def combine(self, n: int, k: int) -> List[List[int]]:
+        self.dfs(n,1,k)
+        return self.res
+    def dfs(self,n,start,k):
+        if len(self.path)==k:
+            p=copy.deepcopy(self.path)
+            self.res.append(p)
+            return 
+        for i in range(start,n+1):
+            self.path.append(i)
+            self.dfs(n,i+1,k)
+            self.path.pop()
+```
+---
+---
+1311 [获取你好友已观看的视频](https://leetcode-cn.com/problems/get-watched-videos-by-your-friends/)
+
+> 有 n 个人，每个人都有一个  0 到 n-1 的唯一 id 。
+给你数组 watchedVideos  和 friends ，其中 watchedVideos[i]  和 friends[i] 分别表示 id = i 的人观看过的视频列表和他的好友列表。
+Level 1 的视频包含所有你好友观看过的视频，level 2 的视频包含所有你好友的好友观看过的视频，以此类推。一般的，Level 为 k 的视频包含所有从你出发，最短距离为 k 的好友观看过的视频。
+给定你的 id  和一个 level 值，请你找出所有指定 level 的视频，并将它们按观看频率升序返回。如果有频率相同的视频，请将它们按字母顺序从小到大排列。
+
+示例
+![enter description here](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2020/01/03/leetcode_friends_1.png)
+```
+输入：watchedVideos = [["A","B"],["C"],["B","C"],["D"]], friends = [[1,2],[0,3],[0,3],[1,2]], id = 0, level = 1
+输出：["B","C"] 
+解释：
+你的 id 为 0（绿色），你的朋友包括（黄色）：
+id 为 1 -> watchedVideos = ["C"] 
+id 为 2 -> watchedVideos = ["B","C"] 
+你朋友观看过视频的频率为：
+B -> 1 
+C -> 2
+```
+代码
+```python
+class Solution:
+    def watchedVideosByFriends(self, watchedVideos: List[List[str]], friends: List[List[int]], id: int, level: int) -> List[str]:
+        '''
+        先通过bfs搜索到最短距离为level的好友，再记录这些还有观看视频的频率，根据频率排序。
+        '''
+        v=set()
+        q=deque()
+        q.append(id)
+        d=0
+        v.add(id)
+        # bfs获取距离为level的好友
+        while len(q):
+            size=len(q)
+            for i in range(size):
+                idx=q.pop()
+                for j in friends[idx]:
+                    if j not in v:
+                        q.appendleft(j)
+                        v.add(j)
+            d+=1  # 每遍历一层距离加1
+            if d==level:
+                break
+        book=dict()
+        while len(q)>0:
+            i=q.pop()
+            for video in watchedVideos[i]:
+                if video not in book:
+                    book[video]=1
+                else:
+                    book[video]+=1
+        record=list(book.items())
+        record.sort(key=cmp_to_key(self.comp)) # 根据频率对视频排序
+        res=[]
+        for vi,c in record:
+            res.append(vi)
+        return res
+    def comp(self,r1,r2):
+        if r1[1]>r2[1]:return 1
+        elif r1[1]<r2[1]:return -1
+        elif r1[0]<r2[0]:return  -1
+        else:return 1
+        
+```
+
 
 
 
