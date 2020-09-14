@@ -5912,7 +5912,122 @@ class Solution:
         elif r1[1]<r2[1]:return -1
         elif r1[0]<r2[0]:return  -1
         else:return 1
-        
+```
+---
+---
+1314 [矩阵区域和](https://leetcode-cn.com/problems/matrix-block-sum/)
+
+> 给你一个 m * n 的矩阵 mat 和一个整数 K ，请你返回一个矩阵 answer ，其中每个 answer[i][j] 是所有满足下述条件的元素 mat[r][c] 的和： 
+- i - K <= r <= i + K, j - K <= c <= j + K 
+- (r, c) 在矩阵内。
+
+示例
+```
+输入：mat = [[1,2,3],[4,5,6],[7,8,9]], K = 1
+输出：[[12,21,16],[27,45,33],[24,39,28]]
+
+
+输入：mat = [[1,2,3],[4,5,6],[7,8,9]], K = 2
+输出：[[45,45,45],[45,45,45],[45,45,45]]
+```
+代码
+```python
+class Solution:
+    def matrixBlockSum(self, mat: List[List[int]], K: int) -> List[List[int]]:
+        '''
+        题目所求矩阵元素res[i][j]为mat的子矩阵mat[r1:r2][c1:c2]的和
+        构建矩阵前缀和，s[i][j]为以0,0为左上角，(i-1,j-1)为右下角的子矩阵元素和
+        则mat[r1:r2][c1:c2]的元素和为s[r2+1]+s[c2+1]-s[r2+1][c1]-s[r1][c2+1]+s[r1][c1]
+        '''
+        m,n=len(mat),len(mat[0])
+        s=[[0]*(n+1) for _ in range(m+1)]
+        for i in range(1,m+1):
+            for j in range(1,n+1):
+                s[i][j]=s[i][j-1]+mat[i-1][j-1]
+            for j in range(1,n+1):
+                s[i][j]+=s[i-1][j]
+        res=[[0]*n for _ in range(m)]
+        # print(s)
+        for i in range(m):
+            for j in range(n):
+                r1,c1=max(0,i-K),max(0,j-K)
+                r2,c2=min(m-1,i+K),min(n-1,j+K)
+                res[i][j]=s[r2+1][c2+1]-s[r2+1][c1]-s[r1][c2+1]+s[r1][c1]
+        return res
+```
+---
+---
+1334 [阈值距离内邻居最少的城市](https://leetcode-cn.com/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/)
+
+> 有 n 个城市，按从 0 到 n-1 编号。给你一个边数组 edges，其中 edges[i] = [fromi, toi, weighti] 代表 fromi 和 toi 两个城市之间的双向加权边，距离阈值是一个整数 distanceThreshold。
+返回能通过某些路径到达其他城市数目最少、且路径距离 最大 为 distanceThreshold 的城市。如果有多个这样的城市，则返回编号最大的城市。
+注意，连接城市 i 和 j 的路径的距离等于沿该路径的所有边的权重之和。
+
+示例
+![enter description here](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2020/01/26/find_the_city_01.png)
+```
+输入：n = 4, edges = [[0,1,3],[1,2,1],[1,3,4],[2,3,1]], distanceThreshold = 4
+输出：3
+解释：城市分布图如上。
+每个城市阈值距离 distanceThreshold = 4 内的邻居城市分别是：
+城市 0 -> [城市 1, 城市 2] 
+城市 1 -> [城市 0, 城市 2, 城市 3] 
+城市 2 -> [城市 0, 城市 1, 城市 3] 
+城市 3 -> [城市 1, 城市 2] 
+城市 0 和 3 在阈值距离 4 以内都有 2 个邻居城市，但是我们必须返回城市 3，因为它的编号最大。
+```
+- 2 <= n <= 100
+- 1 <= edges.length <= n * (n - 1) / 2
+- edges[i].length == 3
+- 0 <= fromi < toi < n
+- 1 <= weighti, distanceThreshold <= 10^4
+- 所有 (fromi, toi) 都是不同的。
+
+代码(java)
+```java
+class Solution {
+    public int findTheCity(int n, int[][] edges, int distanceThreshold) {
+        /**
+        先用Floyd算法求解每个点到其他点的最短路径长度，再对每个点进行搜索
+        */
+        int res=0;
+        int inf=99999999;
+        int[][] mat = new int[n][n];
+        for (int i=0;i<n;i++){
+            for(int j=0;j<n;j++)mat[i][j]=inf;
+            mat[i][i]=0;
+        }
+        //构建初始邻接矩阵
+        for(int[] edge:edges){
+            mat[edge[0]][edge[1]]=edge[2];
+            mat[edge[1]][edge[0]]=edge[2];
+        }
+        //Floyd算法。注意执行Floyd算法时，中间过渡结点要放最外层循环
+        for(int k=0;k<n;k++) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (mat[i][k] + mat[k][j] < mat[i][j]) {
+                        mat[i][j] = mat[i][k] + mat[k][j];
+                        mat[j][i] = mat[i][j];
+                    }
+                }
+            }
+        }
+        int min=9999999,c=0;
+        //搜索每个结点
+        for (int i=0;i<n;i++){
+            c=0;
+            for (int j=0;j<n;j++){
+                if (mat[i][j]<=distanceThreshold)c+=1;
+            }
+            if (c<=min){
+                min=c;
+                res=i;
+            }
+        }
+        return res;
+    }
+}
 ```
 
 
