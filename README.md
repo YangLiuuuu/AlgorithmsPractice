@@ -6029,7 +6029,69 @@ class Solution {
     }
 }
 ```
+---
+---
+37 [解数独](https://leetcode-cn.com/problems/sudoku-solver/)
 
+> 编写一个程序，通过已填充的空格来解决数独问题。
+一个数独的解法需遵循如下规则：
+数字 1-9 在每一行只能出现一次。
+数字 1-9 在每一列只能出现一次。
+数字 1-9 在每一个以粗实线分隔的 3x3 宫内只能出现一次。
+空白格用 '.' 表示。
+
+ - 给定的数独序列只包含数字 1-9 和字符 '.' 。 
+ - 你可以假设给定的数独只有唯一解。
+ -  给定数独永远是 9x9 形式的。
+
+代码
+```python
+class Solution:
+    def solveSudoku(self, board: List[List[str]]) -> None:
+        """
+        Do not return anything, modify board in-place instead.
+        """
+        '''
+        将字符串转为整数
+        '''
+        def to_int(s):
+            return ord(s)-ord('0')
+
+        row_book=[[False]*9 for _ in range(9)]  # 记录行的出现数字
+        col_book=[[False]*9 for _ in range(9)]  # 记录列的出现数字
+        block_book = [[[False]*9 for _a in range(9)] for _ in range(3)]  # 记录子方块出现的数字
+        c=0
+        for i in range(9):
+            for j in range(9):
+                if '1'<=board[i][j]<='9':
+                    n=to_int(board[i][j])-1
+                    row_book[i][n]=True
+                    col_book[j][n]=True
+                    block_book[i//3][j//3][n]=True
+                else:c+=1
+        def dfs(c,row,col):
+            if c==0:  # 如果所有的空白都已填满则返回True
+                return True
+            i,j=row,col
+            while i<9 and j<9 and board[i][j]!='.':  # 找到下一个空白的格子
+                if j==8:
+                    j=0
+                    i+=1
+                else:j+=1
+            for k in range(1,10): # 开始回溯
+                if not row_book[i][k-1] and not col_book[j][k-1] and not block_book[i//3][j//3][k-1]:
+                    row_book[i][k-1]=True
+                    col_book[j][k-1]=True
+                    block_book[i//3][j//3][k-1]=True
+                    board[i][j]=str(k)
+                    if dfs(c-1,i,j):return True
+                    row_book[i][k-1]=False
+                    col_book[j][k-1]=False
+                    block_book[i//3][j//3][k-1]=False
+            board[i][j]='.' 
+            return False # 如果没有数字可以填这个格子，返回False，方便继续回溯，因为题目保证有解，函数总会返回True，格子一定会被填满
+        dfs(c,0,0)
+```
 
 
 
