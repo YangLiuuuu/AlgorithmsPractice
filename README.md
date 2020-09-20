@@ -6092,6 +6092,130 @@ class Solution:
             return False # 如果没有数字可以填这个格子，返回False，方便继续回溯，因为题目保证有解，函数总会返回True，格子一定会被填满
         dfs(c,0,0)
 ```
+---
+---
+1339 [分裂二叉树的最大乘积](https://leetcode-cn.com/problems/maximum-product-of-splitted-binary-tree/)
+
+> 给你一棵二叉树，它的根为 root 。请你删除 1 条边，使二叉树分裂成两棵子树，且它们子树和的乘积尽可能大。
+由于答案可能会很大，请你将结果对 10^9 + 7 取模后再返回。
+
+示例
+![enter description here](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2020/02/02/sample_1_1699.png)
+```
+输入：root = [1,2,3,4,5,6]
+输出：110
+解释：删除红色的边，得到 2 棵子树，和分别为 11 和 10 。它们的乘积是 110 （11*10）
+```
+代码
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    '''
+    对二叉树进行遍历，把每个结点的值修改为:左子树的和+右子树的和+结点值
+    设树上所有结点值得和为su
+    再对二叉树进行遍历，并对每一个分支尝试断开，断开某一条分支后获得的乘积为
+    (su-root.left.val)*root.left.val
+    '''
+    def __init__(self):
+        self.res=0
+    def maxProduct(self, root: TreeNode) -> int:
+        su = self.summation(root)
+        # print(root.val)
+        stack=[]
+        p=root
+        while p or stack:
+            if p:
+                if p.left:
+                    self.res=max(self.res,(su-p.left.val)*p.left.val)
+                stack.append(p)
+                p=p.left
+            else:
+                p=stack.pop()
+                if p.right:
+                    self.res=max(self.res,(su-p.right.val)*p.right.val)
+                p=p.right
+        return self.res%1000000007
+
+    def summation(self,root):
+        if not root:return 0
+        left=self.summation(root.left)
+        right=self.summation(root.right)
+        root.val+=left
+        root.val+=right
+        return root.val
+```
+---
+---
+1340  [跳跃游戏 V](https://leetcode-cn.com/problems/jump-game-v/)
+
+> 给你一个整数数组 arr 和一个整数 d 。每一步你可以从下标 i 跳到：
+i + x ，其中 i + x < arr.length 且 0 < x <= d 。
+i - x ，其中 i - x >= 0 且 0 < x <= d 。
+除此以外，你从下标 i 跳到下标 j 需要满足：arr[i] > arr[j] 且 arr[i] > arr[k] ，其中下标 k 是所有 i 到 j 之间的数字（更正式的，min(i, j) < k < max(i, j)）。
+你可以选择数组的任意下标开始跳跃。请你返回你 最多 可以访问多少个下标。
+请注意，任何时刻你都不能跳到数组的外面。
+
+示例
+![enter description here](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2020/02/02/meta-chart.jpeg)
+
+```
+输入：arr = [6,4,14,6,8,13,9,7,10,6,12], d = 2
+输出：4
+解释：你可以从下标 10 出发，然后如上图依次经过 10 --> 8 --> 6 --> 7 。
+注意，如果你从下标 6 开始，你只能跳到下标 7 处。你不能跳到下标 5 处因为 13 > 9 。你也不能跳到下标 4 处，因为下标 5 在下标 4 和 6 之间且 13 > 9 。
+类似的，你不能从下标 3 处跳到下标 2 或者下标 1 处。
+
+
+输入：arr = [3,3,3,3,3], d = 3
+输出：1
+解释：你可以从任意下标处开始且你永远无法跳到任何其他坐标。
+
+输入：arr = [7,6,5,4,3,2,1], d = 1
+输出：7
+解释：从下标 0 处开始，你可以按照数值从大到小，访问所有的下标。
+```
+代码
+```python
+class Solution:
+    def maxJumps(self, arr: List[int], d: int) -> int:
+        '''
+        记忆化搜索
+        设dp[i]表示从i开始最多能够访问的下标个数，dp[i]=max{dp[j}+1,其中j为i能到达的所有下标
+        每次我们都对该坐标两个方向搜索最多d步就可以得到dp[i]。
+        由于搜索时我们总是从按照高度由高往低搜索，搜索时如果dp[i]不是初始状态我们直接返回即可，不会出现死循环
+        '''
+        n=len(arr)
+        dp=[0]*n
+        res=0
+        def dfs(idx):
+            if dp[idx]!=0:return
+            dp[idx]=1
+            i=idx-1
+            while i>=0:
+                if idx-i>d or arr[i]>=arr[idx]:break
+                dfs(i)
+                dp[idx]=max(dp[i]+1,dp[idx])
+                i-=1
+            i=idx+1
+            while i<n:
+                if i-idx>d or arr[i]>=arr[idx]:break
+                dfs(i)
+                dp[idx]=max(dp[i]+1,dp[idx])
+                i+=1
+        for i in range(n):
+            dfs(i)
+        for i in range(n):
+            res=max(dp[i],res)
+        return res
+```
+
+
 
 
 
